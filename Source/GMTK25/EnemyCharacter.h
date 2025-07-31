@@ -45,4 +45,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	float _VisionFOW = 180.f;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	float _TimeToAlert = 0.9f;
+	float _AlertTimer;
 };

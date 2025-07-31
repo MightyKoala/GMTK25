@@ -73,6 +73,7 @@ void AEnemyCharacter::UpdateVision()
                     if (hitResult.GetActor() == player)
                     {
                         _TargetPlayer = Cast<APlayerCharacter>(hitResult.GetActor());
+                        _AlertTimer = _TimeToAlert;
                     }
                 }
             }
@@ -91,6 +92,39 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 	{
 		FRotator newRotation = directionToPlayer.Rotation();
 		SetActorRotation(newRotation);
+	}
+
+
+	if (_AlertTimer > 0.f)
+	{
+		_AlertTimer -= DeltaTime;
+
+		if (_AlertTimer <= 0.f)
+		{
+			FVector Start = GetActorLocation();
+			FVector End = Start + (GetActorForwardVector() * 10000);
+
+			FHitResult HitResult;
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(this);
+
+			if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+			{
+				if (APlayerCharacter* hitPlayer = Cast<APlayerCharacter>(HitResult.GetActor()))
+				{
+					hitPlayer->TakeDamage();
+				}
+			}
+
+			if (APlayerController* playerController = Cast<APlayerController>(Controller))
+			{
+				DisableInput(playerController);
+			}
+		}
+		else
+		{
+			return;
+		}
 	}
 }
 

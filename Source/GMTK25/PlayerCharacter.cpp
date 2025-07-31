@@ -17,6 +17,16 @@ APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	_ShotStationaryTimer = 0.f;
+	_Health = _MaxHealth;
+}
+
+void APlayerCharacter::TakeDamage(int damage)
+{
+	_Health -= damage;
+	if (_Health <= 0)
+	{
+		Destroy();
+	}
 }
 
 void APlayerCharacter::BeginPlay()
@@ -48,6 +58,7 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 {
 	FVector Start = GetActorLocation();
 	FVector End = Start + (GetActorForwardVector() * 10000);
+	_ShotDirection = End - Start;
 
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
@@ -86,6 +97,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		}
 		else
 		{
+			SetActorRotation(_ShotDirection.Rotation());
 			return;
 		}
 	}

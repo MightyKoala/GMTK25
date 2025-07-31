@@ -27,6 +27,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void TakeDamage(int damage = 1);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,9 +42,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ShootAction;
 
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere, Category = Gameplay)
 	float ShotStationaryTime = 1.f;
 	float _ShotStationaryTimer;
+	FVector _ShotDirection;
+
+	UPROPERTY(EditAnywhere, Category = Gameplay)
+	float _MaxHealth;
+	float _Health;
 
 	void Move(const FInputActionValue& value);
 	void Shoot(const FInputActionValue& value);
