@@ -3,6 +3,7 @@
 
 #include "PlayerCharacter.h"
 
+#include "EnemyCharacter.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -12,14 +13,12 @@
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 
-// Sets default values
 APlayerCharacter::APlayerCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	_ShotStationaryTimer = 0.f;
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -45,10 +44,51 @@ void APlayerCharacter::Move(const FInputActionValue& value)
 	AddMovementInput(FVector(0.f, 1.f, 0.f), movementVector.X);
 }
 
-// Called every frame
+void APlayerCharacter::Shoot(const FInputActionValue& value)
+{
+	FVector Start = GetActorLocation();
+	FVector End = Start + (GetActorForwardVector() * 10000);
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+	{
+		if (AEnemyCharacter* hitEnemy = Cast<AEnemyCharacter>(HitResult.GetActor()))
+		{
+			hitEnemy->TakeDamage();
+		}
+	}
+
+	if (APlayerController* playerController = Cast<APlayerController>(Controller))
+	{
+		DisableInput(playerController);
+	}
+	_ShotStationaryTimer = ShotStationaryTime;
+
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	if (_ShotStationaryTimer > 0.f)
+	{
+		_ShotStationaryTimer -= DeltaTime;
+
+		if (_ShotStationaryTimer <= 0.f)
+		{
+			if (APlayerController* playerController = Cast<APlayerController>(Controller))
+			{
+				EnableInput(playerController);
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
 
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
@@ -56,13 +96,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 		playerController->DeprojectMousePositionToWorld(mouseWorldPosition, mouseWorldDirection);
 
 		FVector Start = mouseWorldPosition;
-		FVector End = Start + (mouseWorldDirection * 10000); // Extend the line trace downwards
+		FVector End = Start + (mouseWorldDirection * 10000);
 
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(this); // Ignore the character itself
+		CollisionParams.AddIgnoredActor(this);
 
-		// Perform the line trace
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
 		{
 			FVector hitLocation = HitResult.Location;
@@ -81,7 +120,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	}
 }
 
-// Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -89,6 +127,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		enhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		enhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
 	}
 }
 

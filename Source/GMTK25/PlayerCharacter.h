@@ -37,5 +37,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* MovementAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* ShootAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	float ShotStationaryTime = 1.f;
+	float _ShotStationaryTimer;
+
 	void Move(const FInputActionValue& value);
+	void Shoot(const FInputActionValue& value);
 };
