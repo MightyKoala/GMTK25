@@ -27,6 +27,7 @@ protected:
 	void SpawnPlayer();
 	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
 	FVector GetNextSpawnPoint();
+	void ToggleGameOverVisibility();
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	float LevelTime = 30.f;
@@ -40,10 +41,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<APlayerCharacter> PlayerToSpawn;
 
-	/*UPROPERTY(EditAnywhere, Category = "UI")
+	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverScreen;
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> MissionSuccessScreen;*/
+	TSubclassOf<UUserWidget> MissionSuccessScreen;
+
+	UUserWidget* OverlayWidget;
 
 	TArray<APlayerGhostCharacter*> GhostPlayers;
 	TArray<int> PlayBackIndexes;

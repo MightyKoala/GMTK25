@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "DefaultGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerSpawnPoint.h"
@@ -25,7 +22,8 @@ void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
 
 		if (GameInstance->GetDeathCount() >= AmountOfLives)
 		{
-
+			UE_LOG(LogTemp, Warning, TEXT("GAME OVER!"));
+			ToggleGameOverVisibility();
 		}
 	}
 
@@ -33,13 +31,13 @@ void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		UGameplayStatics::OpenLevel(World, FName(World->GetMapName()));
+		FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
+		UGameplayStatics::OpenLevel(World, FName(CurrentLevelName));
 	}
 }
 
 void ADefaultGameMode::BeginPlay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("GameMode BeginPlay!"));
 	Super::BeginPlay();
 	LevelTimer = LevelTime;
 	PlayBackTimer = 0.f;
@@ -56,7 +54,6 @@ void ADefaultGameMode::BeginPlay()
 	for (int i = 0; i < deathCount; i++)
 	{
 		SpawnPlayerReplayCharacter(GetNextSpawnPoint(), FVector::ForwardVector.Rotation());
-		UE_LOG(LogTemp, Warning, TEXT("Spawning replay character!"));
 	}
 
 	SpawnPlayer();
@@ -66,7 +63,7 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("Level timer is: %f"), LevelTimer);
+	UE_LOG(LogTemp, Log, TEXT("Level timer is: %f"), LevelTimer);
 	LevelTimer -= DeltaTime;
 	if (LevelTimer <= 0.f)
 	{
@@ -110,12 +107,6 @@ void ADefaultGameMode::SpawnPlayer()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	APlayerCharacter* newPlayer = World->SpawnActor<APlayerCharacter>(PlayerToSpawn, GetNextSpawnPoint(), FVector::ForwardVector.Rotation(), SpawnParams);
-
-	if (newPlayer)
-	{
-		// Additional initialization logic can go here
-		UE_LOG(LogTemp, Warning, TEXT("Spawned player character!"));
-	}
 }
 
 void ADefaultGameMode::SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation)
@@ -126,12 +117,6 @@ void ADefaultGameMode::SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotato
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	APlayerGhostCharacter* ghostPlayer = World->SpawnActor<APlayerGhostCharacter>(PlayerReplayPawn, SpawnLocation, SpawnRotation, SpawnParams);
-
-	if (ghostPlayer)
-	{
-		// Additional initialization logic can go here
-		UE_LOG(LogTemp, Warning, TEXT("Spawned replay character!"));
-	}
 	GhostPlayers.Add(ghostPlayer);
 	PlayBackIndexes.Add(0);
 }
@@ -157,4 +142,33 @@ FVector ADefaultGameMode::GetNextSpawnPoint()
 		}
 	}
 	return spawnPos;
+}
+
+void ADefaultGameMode::ToggleGameOverVisibility()
+{
+	if (!OverlayWidget)
+	{
+		OverlayWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverScreen);
+		if (OverlayWidget)
+		{
+			OverlayWidget->AddToViewport();
+		}
+	}
+
+	if (OverlayWidget)
+	{
+		const ESlateVisibility CurrentVisibility = OverlayWidget->GetVisibility();
+		bool isVisible = CurrentVisibility == ESlateVisibility::Visible;
+
+		OverlayWidget->SetVisibility(isVisible ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+
+		if (isVisible)
+		{
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+		}
+		else
+		{
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+		}
+	}
 }
