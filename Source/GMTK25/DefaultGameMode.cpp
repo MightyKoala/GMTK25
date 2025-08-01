@@ -74,7 +74,7 @@ void ADefaultGameMode::Tick(float DeltaTime)
 				const PlayerFrameRecording& frame = GameInstance->GetRecordedPlayerFrames(ghostIndex)[frameIndex];
 				if (frame.TimeStamp < PlayBackTimer)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost!"), frameIndex);
+					//UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost!"), frameIndex);
 					GhostPlayers[ghostIndex]->SimulateFrame(frame);
 					PlayBackIndexes[ghostIndex] = frameIndex;
 				}
