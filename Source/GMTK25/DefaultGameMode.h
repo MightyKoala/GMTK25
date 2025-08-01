@@ -5,6 +5,7 @@
 #include "PlayerCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "PlayerFrameRecording.h"
+#include "Blueprint/UserWidget.h"
 #include "DefaultGameMode.generated.h"
 
 UCLASS()
@@ -17,7 +18,7 @@ public:
 
 	float GetLevelMaxTime() { return LevelTime; }
 	float GetLevelTimer() { return LevelTimer; }
-	void ReloadLevel();
+	void ReloadLevel(bool isCausedByDeath);
 
 protected:
 
@@ -28,7 +29,7 @@ protected:
 	FVector GetNextSpawnPoint();
 
 	UPROPERTY(EditAnywhere, Category = Config)
-	float LevelTime = 60.f;
+	float LevelTime = 30.f;
 	float LevelTimer;
 
 	UPROPERTY(EditAnywhere, Category = Config)
@@ -38,6 +39,11 @@ protected:
 	TSubclassOf<APlayerGhostCharacter> PlayerReplayPawn;
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<APlayerCharacter> PlayerToSpawn;
+
+	/*UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> GameOverScreen;
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> MissionSuccessScreen;*/
 
 	TArray<APlayerGhostCharacter*> GhostPlayers;
 	TArray<int> PlayBackIndexes;

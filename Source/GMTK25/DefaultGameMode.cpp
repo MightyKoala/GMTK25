@@ -12,8 +12,23 @@ ADefaultGameMode::ADefaultGameMode()
 	LevelTimer = LevelTime;
 }
 
-void ADefaultGameMode::ReloadLevel()
+void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
 {
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GameInstance)
+	{
+		if (isCausedByDeath)
+		{
+			GameInstance->IncreaseDeathCount();
+		}
+		GameInstance->StoreRecordedFrames();
+
+		if (GameInstance->GetDeathCount() >= AmountOfLives)
+		{
+
+		}
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("Gamemode reloading level!"));
 	UWorld* World = GetWorld();
 	if (World)
@@ -51,11 +66,11 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//UE_LOG(LogTemp, Warning, TEXT("My level timer is: %f"), LevelTimer);
+	UE_LOG(LogTemp, Warning, TEXT("Level timer is: %f"), LevelTimer);
 	LevelTimer -= DeltaTime;
 	if (LevelTimer <= 0.f)
 	{
-		//ReloadLevel();
+		ReloadLevel(true);
 	}
 
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));

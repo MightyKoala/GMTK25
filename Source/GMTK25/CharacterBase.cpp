@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "CharacterBase.h"
 #include "EnemyCharacter.h"
 #include "DefaultGameMode.h"
@@ -29,19 +26,10 @@ void ACharacterBase::DamageCharacter(int damage)
 
 void ACharacterBase::OnPlayerDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnPlayerDeath called"));
-	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GameInstance)
+	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
 	{
-		GameInstance->IncreaseDeathCount();
-		GameInstance->StoreRecordedFrames();
-
-		ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
-		if (GameMode)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Resetting gamemode, lives left: %d"), GameInstance->GetDeathCount());
-			GameMode->ReloadLevel();
-		}
+		GameMode->ReloadLevel(true);
 	}
 }
 

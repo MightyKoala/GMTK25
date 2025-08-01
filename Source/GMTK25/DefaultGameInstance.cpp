@@ -11,3 +11,10 @@ void UDefaultGameInstance::StoreRecordedFrames()
 	RecordedPlayerFrames.Add(CurrentPlayerFrames);
 	CurrentPlayerFrames.Empty();
 }
+
+void UDefaultGameInstance::ResetGameInstance()
+{
+	RecordedPlayerFrames.Empty();
+	CurrentPlayerFrames.Empty();
+	DeathCount = 0;
+}
