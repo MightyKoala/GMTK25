@@ -10,7 +10,6 @@
 
 AEnemyCharacter::AEnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -44,7 +43,6 @@ void AEnemyCharacter::UpdateVision()
 	FVector characterPosition = GetActorLocation();
 	FVector playerPosition;
 
-	// Get all actors of the player class (assuming you have a player class)
 	TArray<AActor*> targets;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacterBase::StaticClass(), targets);
 
@@ -84,7 +82,11 @@ void AEnemyCharacter::UpdateVision()
 
 void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 {
-    if (_ShotStationaryTimer > 0.f)
+    if (!IsValid(_TargetPlayer))
+    {
+        _TargetPlayer = nullptr;
+    }
+    if (_ShotStationaryTimer > 0.f || _TargetPlayer == nullptr)
         return;
 
     FVector characterPosition = GetActorLocation();

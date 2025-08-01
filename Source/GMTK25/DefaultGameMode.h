@@ -39,8 +39,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<APlayerCharacter> PlayerToSpawn;
 
-	APlayerGhostCharacter* GhostPlayer;
-	int PlayBackIndex;
-	
-	float playBackTimer = 0.f;
+	TArray<APlayerGhostCharacter*> GhostPlayers;
+	TArray<int> PlayBackIndexes;
+
+	float PlayBackTimer = 0.f;
 };

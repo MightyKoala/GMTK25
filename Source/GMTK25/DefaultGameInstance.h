@@ -15,11 +15,11 @@ public:
 	int GetDeathCount() { return DeathCount; }
 	void RecordFrame(PlayerFrameRecording frame);
 	void StoreRecordedFrames();
-	TArray<PlayerFrameRecording>& GetRecordedPlayerFrames() { return RecordedPlayerFrames; }
+	const TArray<PlayerFrameRecording>& GetRecordedPlayerFrames(int index) { return RecordedPlayerFrames[index]; }
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Game Stats")
 	int DeathCount = 0;
-	TArray<PlayerFrameRecording> RecordedPlayerFrames;
+	TArray<TArray<PlayerFrameRecording>> RecordedPlayerFrames;
 	TArray<PlayerFrameRecording> CurrentPlayerFrames;
 };

@@ -8,7 +8,6 @@ void UDefaultGameInstance::RecordFrame(PlayerFrameRecording frame)
 
 void UDefaultGameInstance::StoreRecordedFrames()
 {
-	RecordedPlayerFrames.Empty();
-	RecordedPlayerFrames = CurrentPlayerFrames;
+	RecordedPlayerFrames.Add(CurrentPlayerFrames);
 	CurrentPlayerFrames.Empty();
 }

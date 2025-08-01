@@ -43,6 +43,7 @@ void APlayerCharacter::Move(const FInputActionValue& value)
 void APlayerCharacter::Shoot()
 {
 	ShootAct(GetActorLocation(), GetActorForwardVector());
+	UE_LOG(LogTemp, Warning, TEXT("Shot Logged"));
 	_CurrentFrame.ShootInput = true;
 }
 

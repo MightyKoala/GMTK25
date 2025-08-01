@@ -10,7 +10,6 @@ ADefaultGameMode::ADefaultGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	LevelTimer = LevelTime;
-	GhostPlayer = nullptr;
 }
 
 void ADefaultGameMode::ReloadLevel()
@@ -28,8 +27,9 @@ void ADefaultGameMode::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("GameMode BeginPlay!"));
 	Super::BeginPlay();
 	LevelTimer = LevelTime;
-	playBackTimer = 0.f;
-	GhostPlayer = nullptr;
+	PlayBackTimer = 0.f;
+	GhostPlayers.Empty();
+	PlayBackIndexes.Empty();
 
 	int deathCount = 0;
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
@@ -38,9 +38,7 @@ void ADefaultGameMode::BeginPlay()
 		deathCount = GameInstance->GetDeathCount();
 	}
 
-	//Make more able to spawn
-	//for (int i = 0; i < deathCount; i++)
-	if(deathCount >= 1)
+	for (int i = 0; i < deathCount; i++)
 	{
 		SpawnPlayerReplayCharacter(GetNextSpawnPoint(), FVector::ForwardVector.Rotation());
 		UE_LOG(LogTemp, Warning, TEXT("Spawning replay character!"));
@@ -61,21 +59,24 @@ void ADefaultGameMode::Tick(float DeltaTime)
 	}
 
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GhostPlayer && GameInstance)
+	if (!GhostPlayers.IsEmpty() && GameInstance)
 	{
-		playBackTimer += DeltaTime;
-		int frameCount = GameInstance->GetRecordedPlayerFrames().Num();
-		if (PlayBackIndex != frameCount - 1)
-		{
+		PlayBackTimer += DeltaTime;
 
-			for (int i = PlayBackIndex; i < frameCount; i++)
+		for (int ghostIndex = 0; ghostIndex < GhostPlayers.Num(); ghostIndex++)
+		{
+			if (!IsValid(GhostPlayers[ghostIndex]))
+				continue;
+			int frameCount = GameInstance->GetRecordedPlayerFrames(ghostIndex).Num();
+			int lastPlaybackIndex = PlayBackIndexes[ghostIndex];
+			for (int frameIndex = lastPlaybackIndex + 1; frameIndex < frameCount; frameIndex++)
 			{
-				PlayerFrameRecording& frame = GameInstance->GetRecordedPlayerFrames()[i];
-				if (frame.TimeStamp < playBackTimer)
+				const PlayerFrameRecording& frame = GameInstance->GetRecordedPlayerFrames(ghostIndex)[frameIndex];
+				if (frame.TimeStamp < PlayBackTimer)
 				{
-					//UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost!"), i);
-					GhostPlayer->SimulateFrame(frame);
-					PlayBackIndex = i;
+					UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost!"), frameIndex);
+					GhostPlayers[ghostIndex]->SimulateFrame(frame);
+					PlayBackIndexes[ghostIndex] = frameIndex;
 				}
 				else
 				{
@@ -109,13 +110,15 @@ void ADefaultGameMode::SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotato
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	GhostPlayer = World->SpawnActor<APlayerGhostCharacter>(PlayerReplayPawn, SpawnLocation, SpawnRotation, SpawnParams);
+	APlayerGhostCharacter* ghostPlayer = World->SpawnActor<APlayerGhostCharacter>(PlayerReplayPawn, SpawnLocation, SpawnRotation, SpawnParams);
 
-	if (GhostPlayer)
+	if (ghostPlayer)
 	{
 		// Additional initialization logic can go here
 		UE_LOG(LogTemp, Warning, TEXT("Spawned replay character!"));
 	}
+	GhostPlayers.Add(ghostPlayer);
+	PlayBackIndexes.Add(0);
 }
 
 FVector ADefaultGameMode::GetNextSpawnPoint()
