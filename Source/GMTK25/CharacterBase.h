@@ -1,0 +1,35 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+#include "CharacterBase.generated.h"
+
+UCLASS(Abstract)
+class GMTK25_API ACharacterBase : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	ACharacterBase();
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void DamageCharacter(int damage = 1);
+
+protected:
+	virtual void BeginPlay() override;
+	void MoveAct(FVector2D inputVector);
+	void ShootAct(FVector pos, FVector direction);
+	void OnPlayerDeath();
+	bool IsPlayer = false;
+
+	UPROPERTY(EditAnywhere, Category = "Gameplay")
+	float ShotStationaryTime = 1.f;
+	float _ShotStationaryTimer;
+	FVector _ShotDirection;
+
+	UPROPERTY(VisibleAnywhere, Category = "Gameplay")
+	int _Health;
+
+	UPROPERTY(EditAnywhere, Category = "Gameplay")
+	int _MaxHealth = 1;
+};

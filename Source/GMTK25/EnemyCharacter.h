@@ -1,13 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "CharacterBase.h"
 #include "EnemyCharacter.generated.h"
 
-class APlayerCharacter;
-
 UCLASS()
-class GMTK25_API AEnemyCharacter : public ACharacter
+class GMTK25_API AEnemyCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 
@@ -15,7 +13,6 @@ public:
 	AEnemyCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void TakeDamage(int damage = 1);
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,13 +20,7 @@ protected:
 	void UpdateVision();
 	void UpdateAggresion(float DeltaTime);
 
-	APlayerCharacter* _TargetPlayer;
-
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	int _Health;
-
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	int _MaxHealth = 1;
+	ACharacterBase* _TargetPlayer;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	float _VisionRange = 10000.f;

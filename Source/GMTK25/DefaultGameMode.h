@@ -1,8 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerGhostCharacter.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/GameModeBase.h"
+#include "PlayerFrameRecording.h"
 #include "DefaultGameMode.generated.h"
 
 UCLASS()
@@ -13,21 +15,32 @@ class GMTK25_API ADefaultGameMode : public AGameModeBase
 public:
 	ADefaultGameMode();
 
-	void RecordFrame(APlayerCharacter::PlayerFrameRecording frame);
+	float GetLevelMaxTime() { return LevelTime; }
+	float GetLevelTimer() { return LevelTimer; }
+	void ReloadLevel();
 
 protected:
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	UPROPERTY(VisibleAnywhere, Category = Config)
+	void SpawnPlayer();
+	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
+	FVector GetNextSpawnPoint();
+
+	UPROPERTY(EditAnywhere, Category = Config)
 	float LevelTime = 60.f;
 	float LevelTimer;
 
-	UPROPERTY(VisibleAnywhere, Category = Config)
+	UPROPERTY(EditAnywhere, Category = Config)
 	int AmountOfLives = 3;
 
-	TArray<APlayerCharacter::PlayerFrameRecording> RecordedPlayerFrames;
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
+	TSubclassOf<APlayerGhostCharacter> PlayerReplayPawn;
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
+	TSubclassOf<APlayerCharacter> PlayerToSpawn;
+
+	APlayerGhostCharacter* GhostPlayer;
 	int PlayBackIndex;
 	
-	bool restarted = false;
 	float playBackTimer = 0.f;
 };

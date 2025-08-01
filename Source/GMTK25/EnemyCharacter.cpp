@@ -12,8 +12,6 @@ AEnemyCharacter::AEnemyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	_Health = _MaxHealth;
 }
 
 void AEnemyCharacter::Tick(float DeltaTime)
@@ -47,12 +45,15 @@ void AEnemyCharacter::UpdateVision()
 	FVector playerPosition;
 
 	// Get all actors of the player class (assuming you have a player class)
-	TArray<AActor*> players;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerCharacter::StaticClass(), players);
+	TArray<AActor*> targets;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacterBase::StaticClass(), targets);
 
-    for (AActor* player : players)
+    for (AActor* target : targets)
     {
-        playerPosition = player->GetActorLocation();
+        if(AEnemyCharacter* fellowEnemy = Cast<AEnemyCharacter>(target))
+            continue;
+
+        playerPosition = target->GetActorLocation();
         float distanceToPlayer = FVector::Dist(characterPosition, playerPosition);
 
         if (distanceToPlayer <= _VisionRange)
@@ -70,9 +71,9 @@ void AEnemyCharacter::UpdateVision()
 
                 if (GetWorld()->LineTraceSingleByChannel(hitResult, characterPosition, playerPosition, ECC_Visibility, collisionParams))
                 {
-                    if (hitResult.GetActor() == player)
+                    if (hitResult.GetActor() == target)
                     {
-                        _TargetPlayer = Cast<APlayerCharacter>(hitResult.GetActor());
+                        _TargetPlayer = Cast<ACharacterBase>(hitResult.GetActor());
                         _AlertTimer = _TimeToAlert;
                     }
                 }
@@ -83,6 +84,9 @@ void AEnemyCharacter::UpdateVision()
 
 void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 {
+    if (_ShotStationaryTimer > 0.f)
+        return;
+
     FVector characterPosition = GetActorLocation();
 	FVector directionToPlayer = _TargetPlayer->GetActorLocation() - characterPosition;
 	directionToPlayer.Z = 0;
@@ -94,32 +98,13 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 		SetActorRotation(newRotation);
 	}
 
-
 	if (_AlertTimer > 0.f)
 	{
 		_AlertTimer -= DeltaTime;
 
 		if (_AlertTimer <= 0.f)
 		{
-			FVector Start = GetActorLocation();
-			FVector End = Start + (GetActorForwardVector() * 10000);
-
-			FHitResult HitResult;
-			FCollisionQueryParams CollisionParams;
-			CollisionParams.AddIgnoredActor(this);
-
-			if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
-			{
-				if (APlayerCharacter* hitPlayer = Cast<APlayerCharacter>(HitResult.GetActor()))
-				{
-					hitPlayer->TakeDamage();
-				}
-			}
-
-			if (APlayerController* playerController = Cast<APlayerController>(Controller))
-			{
-				DisableInput(playerController);
-			}
+			ShootAct(GetActorLocation(), GetActorForwardVector());
 		}
 		else
 		{
@@ -127,13 +112,3 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 		}
 	}
 }
-
-void AEnemyCharacter::TakeDamage(int damage)
-{
-	_Health -= damage;
-	if (_Health <= 0)
-	{
-		Destroy();
-	}
-}
-
