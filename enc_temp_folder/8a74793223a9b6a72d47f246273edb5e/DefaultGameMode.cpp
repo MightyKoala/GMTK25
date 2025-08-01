@@ -24,7 +24,6 @@ void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("GAME OVER!"));
 			ToggleGameOverVisibility();
-			return;
 		}
 	}
 
@@ -35,11 +34,6 @@ void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
 		FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 		UGameplayStatics::OpenLevel(World, FName(CurrentLevelName));
 	}
-}
-
-void ADefaultGameMode::UnpauseGame()
-{
-	TogglePauseScreenVisibility();
 }
 
 void ADefaultGameMode::BeginPlay()
@@ -161,66 +155,6 @@ void ADefaultGameMode::ToggleGameOverVisibility()
 		}
 	}
 
-	if (OverlayWidget)
-	{
-		const ESlateVisibility CurrentVisibility = OverlayWidget->GetVisibility();
-		bool isVisible = CurrentVisibility == ESlateVisibility::Visible;
-
-		OverlayWidget->SetVisibility(isVisible ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-
-		if (isVisible)
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), false);
-		}
-		else
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), true);
-		}
-	}
-}
-
-//Use on mission objective completion, unify function with other toggle ui function
-void ADefaultGameMode::ToggleCompletionVisibility()
-{
-	if (!OverlayWidget)
-	{
-		OverlayWidget = CreateWidget<UUserWidget>(GetWorld(), MissionSuccessScreen);
-		if (OverlayWidget)
-		{
-			OverlayWidget->AddToViewport();
-		}
-	}
-
-	if (OverlayWidget)
-	{
-		const ESlateVisibility CurrentVisibility = OverlayWidget->GetVisibility();
-		bool isVisible = CurrentVisibility == ESlateVisibility::Visible;
-
-		OverlayWidget->SetVisibility(isVisible ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-
-		if (isVisible)
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), false);
-		}
-		else
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), true);
-		}
-	}
-}
-
-void ADefaultGameMode::TogglePauseScreenVisibility()
-{
-	if (!OverlayWidget)
-	{
-		OverlayWidget = CreateWidget<UUserWidget>(GetWorld(), PauseScreen);
-		if (OverlayWidget)
-		{
-			OverlayWidget->AddToViewport();
-		}
-	}
-
-	//Reset mouse position to same position as before pausing?
 	if (OverlayWidget)
 	{
 		const ESlateVisibility CurrentVisibility = OverlayWidget->GetVisibility();

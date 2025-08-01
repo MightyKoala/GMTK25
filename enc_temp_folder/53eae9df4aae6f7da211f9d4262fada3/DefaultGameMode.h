@@ -19,8 +19,6 @@ public:
 	float GetLevelMaxTime() { return LevelTime; }
 	float GetLevelTimer() { return LevelTimer; }
 	void ReloadLevel(bool isCausedByDeath);
-	UFUNCTION(BlueprintCallable, Category = "GameFlow")
-	void UnpauseGame();
 
 protected:
 
@@ -30,8 +28,6 @@ protected:
 	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
 	FVector GetNextSpawnPoint();
 	void ToggleGameOverVisibility();
-	void ToggleCompletionVisibility();
-	void TogglePauseScreenVisibility();
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	float LevelTime = 30.f;
@@ -49,8 +45,6 @@ protected:
 	TSubclassOf<UUserWidget> GameOverScreen;
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> MissionSuccessScreen;
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> PauseScreen;
 
 	UUserWidget* OverlayWidget;
 
