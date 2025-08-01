@@ -20,6 +20,19 @@ class GMTK25_API APlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
+	APlayerCharacter(bool usePlayerInput);
+
+	struct PlayerFrameRecording
+	{
+		FVector Location;
+		double TimeStamp;
+		FVector ForwardVector;
+		bool ShootInput;
+		FVector ShotPosition;
+		float DeltaTime;
+		FVector ShotDirection;
+		FVector2D MovementInput;
+	};
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -27,7 +40,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SimulateFrame(const PlayerFrameRecording& frame);
+
 	void TakeDamage(int damage = 1);
+
+	bool UsePlayerInput = true;
 
 protected:
 	// Called when the game starts or when spawned
@@ -52,5 +69,7 @@ protected:
 	float _Health;
 
 	void Move(const FInputActionValue& value);
-	void Shoot(const FInputActionValue& value);
+	void MoveAct(FVector2D inputVector);
+	void Shoot();
+	void ShootAct(FVector pos, FVector direction);
 };

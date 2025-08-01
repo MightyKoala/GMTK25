@@ -20,6 +20,11 @@ APlayerCharacter::APlayerCharacter()
 	_Health = _MaxHealth;
 }
 
+APlayerCharacter::APlayerCharacter(bool usePlayerInput) : APlayerCharacter()
+{
+	UsePlayerInput = usePlayerInput;
+}
+
 void APlayerCharacter::TakeDamage(int damage)
 {
 	_Health -= damage;
@@ -46,7 +51,11 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Move(const FInputActionValue& value)
 {
 	const FVector2D movementVector = value.Get<FVector2D>();
+	MoveAct(movementVector);
+}
 
+void APlayerCharacter::MoveAct(FVector2D movementVector)
+{
 	FRotator rotation = Controller->GetControlRotation();
 	FRotator yawRotation(0.f, rotation.Yaw, 0.f);
 
@@ -54,10 +63,15 @@ void APlayerCharacter::Move(const FInputActionValue& value)
 	AddMovementInput(FVector(0.f, 1.f, 0.f), movementVector.X);
 }
 
-void APlayerCharacter::Shoot(const FInputActionValue& value)
+void APlayerCharacter::Shoot()
+{
+	ShootAct(GetActorLocation(), GetActorForwardVector());
+}
+
+void APlayerCharacter::ShootAct(FVector pos, FVector direction)
 {
 	FVector Start = GetActorLocation();
-	FVector End = Start + (GetActorForwardVector() * 10000);
+	FVector End = Start + (direction * 10000);
 	_ShotDirection = End - Start;
 
 	FHitResult HitResult;
@@ -77,7 +91,6 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 		DisableInput(playerController);
 	}
 	_ShotStationaryTimer = ShotStationaryTime;
-
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -134,12 +147,28 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	if (!UsePlayerInput)
+		return;
+
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		enhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		enhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
+	}
+}
+
+void APlayerCharacter::SimulateFrame(const PlayerFrameRecording& frame)
+{
+	Tick(frame.DeltaTime);
+
+	MoveAct(frame.MovementInput);
+	SetActorRotation(frame.ForwardVector.Rotation());
+
+	if (frame.ShootInput)
+	{
+		ShootAct(frame.ShotPosition, frame.ShotDirection);
 	}
 }
 
