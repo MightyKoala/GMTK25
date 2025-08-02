@@ -17,6 +17,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Death")
 	void DamageCharacter(int damage = 1);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Death")
+	void DeathEvent();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation/EnemyState")
 	bool IsAlive = true;
