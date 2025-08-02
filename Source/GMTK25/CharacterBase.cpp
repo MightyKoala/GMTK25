@@ -23,6 +23,7 @@ void ACharacterBase::DamageCharacter(int damage)
 		IsAlive = false;
 		if(DeathSound && IsValid(DeathSound))
 			UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+		SetActorEnableCollision(false);
 	}
 }
 

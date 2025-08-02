@@ -22,12 +22,10 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
     if (_TargetPlayer == nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Updating Vision"));
         UpdateVision();
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("Updating Agression"));
         UpdateAggresion(DeltaTime);
     }
 }
@@ -77,7 +75,10 @@ void AEnemyCharacter::UpdateVision()
                 {
                     if (hitResult.GetActor() == target)
                     {
-                        _TargetPlayer = Cast<ACharacterBase>(hitResult.GetActor());
+                        ACharacterBase* targetPlayer = Cast<ACharacterBase>(hitResult.GetActor());
+                        if (!targetPlayer->IsAlive)
+                            continue;
+                        _TargetPlayer = targetPlayer;
                         _AlertTimer = _TimeToAlert;
                         OnAlertEvent();
                         IsAlerted = true;
@@ -94,7 +95,7 @@ void AEnemyCharacter::UpdateVision()
 
 void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 {
-    if (!IsValid(_TargetPlayer))
+    if (!IsValid(_TargetPlayer) || !_TargetPlayer->IsAlive)
     {
         _TargetPlayer = nullptr;
     }
