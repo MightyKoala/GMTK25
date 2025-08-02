@@ -49,6 +49,8 @@ void APlayerCharacter::Move(const FInputActionValue& value)
 
 void APlayerCharacter::Shoot()
 {
+	if (!IsAlive)
+		return;
 	if (FireRateTimer <= 0.f)
 		_CurrentFrame.ShootInput = true;
 	OnShootEvent();
