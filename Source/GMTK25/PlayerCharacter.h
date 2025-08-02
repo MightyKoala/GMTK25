@@ -35,6 +35,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ShootAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* FFAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	float FastForwardMultiplier = 3.f;
+	UPROPERTY(EditAnywhere, Category = Input)
+	float TimeDilationSpeed = 1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	USpringArmComponent* CameraSpringArm;
@@ -44,6 +50,11 @@ protected:
 
 	void Move(const FInputActionValue& value);
 	void Shoot();
+	void FastForwardTime();
+	void StopFastForward();
+	void UpdateTimeDilation(float DeltaTime);
 private:
 	PlayerFrameRecording _CurrentFrame;
+	float TargetTimeDilation = 1.f;
+	float FastforwardLerpValue = 1.f;
 };

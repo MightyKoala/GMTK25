@@ -219,36 +219,6 @@ void ADefaultGameMode::ToggleGameOverVisibility()
 	}
 }
 
-//Use on mission objective completion, unify function with other toggle ui function
-void ADefaultGameMode::ToggleCompletionVisibility()
-{
-	if (!OverlayWidget)
-	{
-		OverlayWidget = CreateWidget<UUserWidget>(GetWorld(), MissionSuccessScreen);
-		if (OverlayWidget)
-		{
-			OverlayWidget->AddToViewport();
-		}
-	}
-
-	if (OverlayWidget)
-	{
-		const ESlateVisibility CurrentVisibility = OverlayWidget->GetVisibility();
-		bool isVisible = CurrentVisibility == ESlateVisibility::Visible;
-
-		OverlayWidget->SetVisibility(isVisible ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-
-		if (isVisible)
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), false);
-		}
-		else
-		{
-			UGameplayStatics::SetGamePaused(GetWorld(), true);
-		}
-	}
-}
-
 void ADefaultGameMode::TogglePauseScreenVisibility()
 {
 	if (!OverlayWidget)

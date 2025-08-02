@@ -21,6 +21,8 @@ void ACharacterBase::DamageCharacter(int damage)
 		if(IsPlayer)
 			OnPlayerDeath();
 		IsAlive = false;
+		DeathEvent();
+		// Destroy();
 		if(DeathSound && IsValid(DeathSound))
 			UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 		SetActorEnableCollision(false);

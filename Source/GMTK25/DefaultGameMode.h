@@ -26,6 +26,7 @@ public:
 	void UnpauseGame();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	int GetLivesLeft();
+
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void SetLivesLeft(int lives);
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
@@ -54,7 +55,6 @@ protected:
 	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
 	FVector GetNextSpawnPoint();
 	void ToggleGameOverVisibility();
-	void ToggleCompletionVisibility();
 	void TogglePauseScreenVisibility();
 
 	const float TimeWarpTime = 2;
@@ -70,8 +70,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverScreen;
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> MissionSuccessScreen;
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> PauseScreen;
 
