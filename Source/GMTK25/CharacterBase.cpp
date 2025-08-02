@@ -99,7 +99,7 @@ void ACharacterBase::ShootAct(FVector pos, FVector direction)
 	{
 		if (ACharacterBase* hitEnemy = Cast<ACharacterBase>(HitResult.GetActor()))
 		{
-			hitEnemy->DamageCharacter();
+			//hitEnemy->DamageCharacter();
 		}
 	}
 

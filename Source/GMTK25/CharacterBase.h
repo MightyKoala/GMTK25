@@ -14,6 +14,8 @@ public:
 	ACharacterBase();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Death")
 	void DamageCharacter(int damage = 1);
 
 protected:
