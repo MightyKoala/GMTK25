@@ -41,6 +41,13 @@ protected:
 	void TogglePauseScreenVisibility();
 
 	UPROPERTY(EditAnywhere, Category = Config)
+	USoundWave* TimeWarpSound;
+
+	const float TimeWarpTime = 2;
+	float TimeWarpTimer;
+	bool IsPlayingTimeWarp = false;
+
+	UPROPERTY(EditAnywhere, Category = Config)
 	float LevelTime = 30.f;
 	float LevelTimer;
 

@@ -61,6 +61,7 @@ void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	LevelTimer = LevelTime;
+	TimeWarpTimer = TimeWarpTime;
 	PlayBackTimer = 0.f;
 	GhostPlayers.Empty();
 	PlayBackIndexes.Empty();
@@ -88,7 +89,20 @@ void ADefaultGameMode::Tick(float DeltaTime)
 	LevelTimer -= DeltaTime;
 	if (LevelTimer <= 0.f)
 	{
-		ReloadLevel(true);
+		TimeWarpTimer -= DeltaTime;
+
+		if (TimeWarpTimer > 0.f)
+		{
+			if (IsPlayingTimeWarp == false && TimeWarpSound && IsValid(TimeWarpSound))
+			{
+				UGameplayStatics::PlaySound2D(this, TimeWarpSound);
+				IsPlayingTimeWarp = true;
+			}
+		}
+		else
+		{
+			ReloadLevel(true);
+		}
 	}
 
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
