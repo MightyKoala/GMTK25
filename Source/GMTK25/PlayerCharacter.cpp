@@ -14,11 +14,18 @@
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 #include "DefaultGameInstance.h"
+#include "Camera/CameraActor.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	IsPlayer = true;
+
+	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	CameraSpringArm->SetupAttachment(RootComponent);
+
+	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	PlayerCamera->SetupAttachment(CameraSpringArm);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -42,7 +49,6 @@ void APlayerCharacter::Move(const FInputActionValue& value)
 
 void APlayerCharacter::Shoot()
 {
-	ShootAct(GetActorLocation(), GetActorForwardVector());
 	UE_LOG(LogTemp, Warning, TEXT("Shot Logged"));
 	OnShootEvent();
 	_CurrentFrame.ShootInput = true;
@@ -54,35 +60,59 @@ void APlayerCharacter::Tick(float DeltaTime)
 	_CurrentFrame.Location = GetActorLocation();
 	_CurrentFrame.ForwardVector = GetActorForwardVector();
 	
-	if (_ShotStationaryTimer <= 0.f)
+	if (FireRateTimer <= 0.f)
 	{
 		if (APlayerController* playerController = Cast<APlayerController>(Controller))
 		{
-			FVector mouseWorldPosition, mouseWorldDirection;
+			/*FVector mouseWorldPosition, mouseWorldDirection;
 			playerController->DeprojectMousePositionToWorld(mouseWorldPosition, mouseWorldDirection);
+			auto mousePos = playerController->GetMousePosition();
+			playerController->DeprojectScreenPositionToWorld(mousePos.X, mousePos.Y, mouseWorldPosition, mouseWorldDirection)
 
-			FVector Start = mouseWorldPosition;
-			FVector End = Start + (mouseWorldDirection * 10000);
+			float AngleRadians = FMath::Atan2(mouseWorldDirection.Y, mouseWorldDirection.X);
 
-			FHitResult HitResult;
-			FCollisionQueryParams CollisionParams;
-			CollisionParams.AddIgnoredActor(this);
+			float SinValue = FMath::Sin(AngleRadians);
 
-			if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+			if (SinValue == 0)
 			{
-				FVector hitLocation = HitResult.Location;
-
-				FVector playerPos = GetActorLocation();
-				FVector directionToMouse = hitLocation - playerPos;
-				directionToMouse.Z = 0;
-				directionToMouse.Normalize();
-
-				if (!directionToMouse.IsZero())
-				{
-					FRotator newRotation = directionToMouse.Rotation();
-					SetActorRotation(newRotation);
-				}
+				UE_LOG(LogTemp, Error, TEXT("PlayerCharacter.h | SinValue 0 on mouse rotator"));
+				return;
 			}
+
+			float Distance = mouseWorldPosition.Z / SinValue;
+
+			FVector IntersectionPoint = mouseWorldPosition + (mouseWorldDirection * Distance);
+			IntersectionPoint.Z = 0.0f;*/
+
+			float MouseX, MouseY;
+			playerController->GetMousePosition(MouseX, MouseY);
+
+			FVector WorldLocation, WorldDirection;
+			playerController->DeprojectScreenPositionToWorld(MouseX, MouseY, WorldLocation, WorldDirection);
+
+			FVector ForwardVector = PlayerCamera->GetForwardVector();
+
+			ForwardVector = FRotator(0.f, 180.f, 0.f).RotateVector(ForwardVector);
+
+			ForwardVector = WorldLocation - PlayerCamera->GetComponentLocation();
+			ForwardVector.Normalize();
+
+			// Calculate the target position at the specified height
+			// We need to find the intersection of the forward vector with the height plane
+			float ZDifference = 0.5f - WorldLocation.Z;
+			float Scale = ZDifference / ForwardVector.Z;
+
+			FVector TargetPosition = WorldLocation + (ForwardVector * Scale);
+
+			DrawDebugLine(GetWorld(), WorldLocation, TargetPosition, FColor::Red);
+			DrawDebugSphere(GetWorld(), TargetPosition, 100.f, 12, FColor::Red);
+			//UE_LOG(LogTemp, Warning, TEXT("Camera component Forward: X=%f, Y=%f, Z=%f"), mouseWorldDirection.X, mouseWorldDirection.Y, mouseWorldDirection.Z);
+
+			FVector playerPos = GetActorLocation();
+			playerPos.Z = 0.0f;
+			FVector directionToMouse = TargetPosition - playerPos;
+			FRotator newRotation = directionToMouse.Rotation();
+			SetActorRotation(newRotation);
 		}
 	}
 

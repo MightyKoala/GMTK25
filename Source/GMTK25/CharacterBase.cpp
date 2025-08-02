@@ -9,7 +9,7 @@ ACharacterBase::ACharacterBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	_ShotStationaryTimer = 0.f;
+	FireRateTimer = 0.f;
 	_Health = _MaxHealth;
 }
 
@@ -43,22 +43,9 @@ void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (_ShotStationaryTimer > 0.f)
+	if (FireRateTimer > 0.f)
 	{
-		_ShotStationaryTimer -= DeltaTime;
-
-		if (_ShotStationaryTimer <= 0.f)
-		{
-			if (APlayerController* playerController = Cast<APlayerController>(Controller))
-			{
-				EnableInput(playerController);
-			}
-		}
-		else
-		{
-			SetActorRotation(_ShotDirection.Rotation());
-			return;
-		}
+		FireRateTimer -= DeltaTime;
 	}
 }
 
@@ -83,39 +70,4 @@ void ACharacterBase::MoveAct(FVector2D movementVector)
 		OnStandStillEvent();
 	}
 }
-
-void ACharacterBase::ShootAct(FVector pos, FVector direction)
-{
-	if (GunSound && IsValid(GunSound ))
-	{
-		UGameplayStatics::PlaySound2D(this, GunSound);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Some Character is missing it's gun sound"));
-	}
-
-	FVector Start = GetActorLocation();
-	FVector End = Start + (direction * 10000);
-	_ShotDirection = End - Start;
-
-	FHitResult HitResult;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
-	{
-		if (ACharacterBase* hitEnemy = Cast<ACharacterBase>(HitResult.GetActor()))
-		{
-			//hitEnemy->DamageCharacter();
-		}
-	}
-
-	if (APlayerController* playerController = Cast<APlayerController>(Controller))
-	{
-		DisableInput(playerController);
-	}
-	_ShotStationaryTimer = ShotStationaryTime;
-}
-
 

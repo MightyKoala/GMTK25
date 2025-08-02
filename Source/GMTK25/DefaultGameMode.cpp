@@ -22,13 +22,11 @@ void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
 
 		if (GameInstance->GetDeathCount() >= AmountOfLives)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("GAME OVER!"));
 			ToggleGameOverVisibility();
 			return;
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Gamemode reloading level!"));
 	UWorld* World = GetWorld();
 	if (World)
 	{
@@ -85,7 +83,6 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Log, TEXT("Level timer is: %f"), LevelTimer);
 	LevelTimer -= DeltaTime;
 	if (LevelTimer <= 0.f)
 	{

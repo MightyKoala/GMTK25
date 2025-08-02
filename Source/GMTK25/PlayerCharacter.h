@@ -36,6 +36,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ShootAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	USpringArmComponent* CameraSpringArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UCameraComponent* PlayerCamera;
+
 	void Move(const FInputActionValue& value);
 	void Shoot();
 private:

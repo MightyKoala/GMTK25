@@ -99,7 +99,7 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
         }
     }
 
-    if (_ShotStationaryTimer > 0.f || _TargetPlayer == nullptr)
+    if (FireRateTimer > 0.f || _TargetPlayer == nullptr)
         return;
 
     FVector characterPosition = GetActorLocation();
@@ -119,7 +119,6 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 
 		if (_AlertTimer <= 0.f)
 		{
-			ShootAct(GetActorLocation(), GetActorForwardVector());
             OnShootEvent();
 		}
 		else

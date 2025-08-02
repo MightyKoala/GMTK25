@@ -21,14 +21,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void MoveAct(FVector2D inputVector);
-	void ShootAct(FVector pos, FVector direction);
 	void OnPlayerDeath();
 	bool IsPlayer = false;
 
-	UPROPERTY(EditAnywhere, Category = "Gameplay")
-	float ShotStationaryTime = 1.f;
-	float _ShotStationaryTimer;
-	FVector _ShotDirection;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	float FireRate = 0.5f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	float FireRateTimer = 0.f;
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "OnMove")
 	void OnMoveEvent();
 	
