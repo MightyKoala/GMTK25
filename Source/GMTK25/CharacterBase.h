@@ -29,6 +29,11 @@ protected:
 	float ShotStationaryTime = 1.f;
 	float _ShotStationaryTimer;
 	FVector _ShotDirection;
+	UFUNCTION(BlueprintImplementableEvent, Category = "OnMove")
+	void OnMoveEvent();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "OnStandStill")
+	void OnStandStillEvent();
 
 	UPROPERTY(VisibleAnywhere, Category = "Gameplay")
 	int _Health;

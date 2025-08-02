@@ -74,6 +74,14 @@ void ACharacterBase::MoveAct(FVector2D movementVector)
 
 	AddMovementInput(FVector(1.f, 0.f, 0.f), movementVector.Y);
 	AddMovementInput(FVector(0.f, 1.f, 0.f), movementVector.X);
+	if (movementVector.Y > 0 && movementVector.Y > 0)
+	{
+		OnMoveEvent();
+	}
+	else
+	{
+		OnStandStillEvent();
+	}
 }
 
 void ACharacterBase::ShootAct(FVector pos, FVector direction)
