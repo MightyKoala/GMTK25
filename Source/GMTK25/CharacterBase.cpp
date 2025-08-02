@@ -35,6 +35,7 @@ void ACharacterBase::OnPlayerDeath()
 	if (GameMode)
 	{
 		GameMode->LevelTimer = 0;
+		GameMode->PlayerDied = true;
 	}
 }
 

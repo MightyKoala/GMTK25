@@ -21,11 +21,20 @@ public:
 	FString GetLevelTimerString() { return FString::Printf(TEXT("%.1f"), LevelTimer); };
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	float GetLevelTimer() { return LevelTimer; }
-	void ReloadLevel(bool isCausedByDeath);
+	void ReloadLevel();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void UnpauseGame();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	int GetLivesLeft();
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
+	void CompleteLevel(FString nextLevel);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
+	float TimeWarpTime = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
+	float PlayerDeathExtraTime = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
+	float LevelCompleteTime = 3;
 
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void SetLivesLeft(int lives);
@@ -44,6 +53,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	float LevelTimer;
+	bool PlayerDied;
+	bool LevelCompleted;
 protected:
 
 	virtual void BeginPlay() override;
@@ -54,8 +65,10 @@ protected:
 	void ToggleGameOverVisibility();
 	void TogglePauseScreenVisibility();
 
-	const float TimeWarpTime = 2;
 	float TimeWarpTimer;
+	float PlayerDeathTimer;
+	float LevelCompleteTimer;
+	FString NextLevelName;
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	int AmountOfLives = 3;

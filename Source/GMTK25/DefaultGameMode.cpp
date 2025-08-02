@@ -8,17 +8,17 @@ ADefaultGameMode::ADefaultGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	LevelTimer = LevelTime;
+	PlayerDied = false;
+	LevelCompleted = false;
+	NextLevelName = "";
 }
 
-void ADefaultGameMode::ReloadLevel(bool isCausedByDeath)
+void ADefaultGameMode::ReloadLevel()
 {
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (GameInstance)
 	{
-		if (isCausedByDeath)
-		{
-			GameInstance->IncreaseDeathCount();
-		}
+		GameInstance->IncreaseDeathCount();
 		GameInstance->StoreRecordedFrames();
 
 		if (GameInstance->GetDeathCount() >= AmountOfLives)
@@ -51,16 +51,26 @@ int ADefaultGameMode::GetLivesLeft()
 	return 0;
 }
 
+void ADefaultGameMode::CompleteLevel(FString nextLevel)
+{
+	LevelCompleted = true;
+	NextLevelName = nextLevel;
+}
+
 void ADefaultGameMode::SetLivesLeft(int lives)
 {
 	AmountOfLives = lives;
 }
+
+
 
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	LevelTimer = LevelTime;
 	TimeWarpTimer = TimeWarpTime;
+	PlayerDeathTimer = PlayerDeathExtraTime;
+	LevelCompleteTimer = LevelCompleteTime;
 	PlayBackTimer = 0.f;
 	GhostPlayers.Empty();
 	PlayBackIndexes.Empty();
@@ -84,10 +94,40 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (LevelCompleted)
+	{
+		LevelCompleteTimer -= DeltaTime;
+		if (LevelCompleteTimer <= 0.f)
+		{
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				if (NextLevelName == "")
+				{
+					UGameplayStatics::OpenLevel(World, FName("BP_MainMenu"));
+				}
+				else
+				{
+					UGameplayStatics::OpenLevel(World, FName(NextLevelName));
+				}
+			}
+		}
+		return;
+	}
+
 	LevelTimer -= DeltaTime;
 	if (LevelTimer <= 0.f)
 	{
 		LevelTimer = 0.f;
+		if (PlayerDied)
+		{
+			PlayerDeathTimer -= DeltaTime;
+			if (PlayerDeathTimer > 0.f)
+			{
+				return;
+			}
+		}
+
 		TimeWarpTimer -= DeltaTime;
 
 		if (TimeWarpTimer > 0.f)
@@ -105,7 +145,7 @@ void ADefaultGameMode::Tick(float DeltaTime)
 		}
 		else
 		{
-			ReloadLevel(true);
+			ReloadLevel();
 		}
 	}
 
