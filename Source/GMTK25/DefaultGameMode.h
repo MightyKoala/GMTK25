@@ -17,6 +17,9 @@ public:
 	ADefaultGameMode();
 
 	float GetLevelMaxTime() { return LevelTime; }
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
+	FString GetLevelTimerString() { return FString::Printf(TEXT("%.2f"), LevelTimer); };
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	float GetLevelTimer() { return LevelTimer; }
 	void ReloadLevel(bool isCausedByDeath);
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
