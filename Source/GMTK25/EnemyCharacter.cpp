@@ -59,6 +59,7 @@ void AEnemyCharacter::UpdateVision()
 
         if (distanceToPlayer <= _VisionRange)
         {
+
             FVector directionToPlayer = (playerPosition - characterPosition).GetSafeNormal();
             FVector characterForward = GetActorForwardVector();
 
@@ -77,6 +78,11 @@ void AEnemyCharacter::UpdateVision()
                         _TargetPlayer = Cast<ACharacterBase>(hitResult.GetActor());
                         _AlertTimer = _TimeToAlert;
                         OnAlertEvent();
+                        IsAlerted = true;
+                    }
+                    else
+                    {
+                        IsAlerted = false;
                     }
                 }
             }

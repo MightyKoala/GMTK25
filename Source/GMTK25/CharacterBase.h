@@ -17,13 +17,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Death")
 	void DamageCharacter(int damage = 1);
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation/EnemyState")
+	bool IsAlive = true;
 protected:
 	virtual void BeginPlay() override;
 	void MoveAct(FVector2D inputVector);
 	void OnPlayerDeath();
 	bool IsPlayer = false;
-	bool IsAlive = true;
+	//bool IsAlive = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	float FireRate = 0.5f;
@@ -44,4 +46,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Gameplay")
 	USoundCue* GunSound;
+
 };
