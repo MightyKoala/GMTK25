@@ -87,6 +87,7 @@ void ADefaultGameMode::Tick(float DeltaTime)
 	LevelTimer -= DeltaTime;
 	if (LevelTimer <= 0.f)
 	{
+		LevelTimer = 0.f;
 		TimeWarpTimer -= DeltaTime;
 
 		if (TimeWarpTimer > 0.f)

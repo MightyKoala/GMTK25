@@ -80,10 +80,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 			FVector TargetPosition = WorldLocation + (WorldDirection * Scale);
 
-			DrawDebugLine(GetWorld(), WorldLocation, TargetPosition, FColor::Red);
-			DrawDebugSphere(GetWorld(), TargetPosition, 100.f, 12, FColor::Red);
-			//UE_LOG(LogTemp, Warning, TEXT("Camera component Forward: X=%f, Y=%f, Z=%f"), ForwardVector.X, ForwardVector.Y, ForwardVector.Z);
-
 			FVector playerPos = GetActorLocation();
 			FVector directionToMouse = TargetPosition - playerPos;
 			directionToMouse.Z = 0.0f;
