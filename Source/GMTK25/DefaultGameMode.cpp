@@ -97,13 +97,10 @@ void ADefaultGameMode::Tick(float DeltaTime)
 				TimeRewindComponent->Play();
 
 				IsPlayingTimeWarp = true;
-
-				//UGameplayStatics::SetGamePaused(GetWorld(), true);
 			}
 		}
 		else
 		{
-			//UGameplayStatics::SetGamePaused(GetWorld(), false);
 			ReloadLevel(true);
 		}
 	}
