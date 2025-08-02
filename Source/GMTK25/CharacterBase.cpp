@@ -32,7 +32,7 @@ void ACharacterBase::OnPlayerDeath()
 	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
-		GameMode->ReloadLevel(true);
+		GameMode->LevelTimer = 0;
 	}
 }
 
