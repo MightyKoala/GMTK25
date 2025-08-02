@@ -19,4 +19,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Death")
 	void OnDeathEvent();
+
+protected:
+	FVector LastDirection;
 };
