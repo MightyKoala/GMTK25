@@ -51,6 +51,11 @@ int ADefaultGameMode::GetLivesLeft()
 	return 0;
 }
 
+void ADefaultGameMode::SetLivesLeft(int lives)
+{
+	AmountOfLives = lives;
+}
+
 void ADefaultGameMode::CompleteMission()
 {
 	ToggleCompletionVisibility();
@@ -94,8 +99,11 @@ void ADefaultGameMode::Tick(float DeltaTime)
 		{
 			if (IsPlayingTimeWarp == false)
 			{
-				MusicActorComponent->SetPitchMultiplier(0.3f);
-				TimeRewindComponent->Play();
+				if(MusicActorComponent)
+					MusicActorComponent->SetPitchMultiplier(0.3f);
+
+				if (TimeRewindComponent)
+					TimeRewindComponent->Play();
 
 				IsPlayingTimeWarp = true;
 			}

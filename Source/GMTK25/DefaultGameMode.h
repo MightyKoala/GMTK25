@@ -27,7 +27,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	int GetLivesLeft();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
+	void SetLivesLeft(int lives);
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void CompleteMission();
+
 
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	UAudioComponent* TimeRewindComponent;
@@ -38,6 +41,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool IsPlayingTimeWarp = false;
 
+	UPROPERTY(EditAnywhere, Category = Config)
+	float LevelTime = 30.f;
+
+	UPROPERTY(BlueprintReadWrite, Category = Config)
 	float LevelTimer;
 protected:
 
@@ -52,9 +59,6 @@ protected:
 
 	const float TimeWarpTime = 2;
 	float TimeWarpTimer;
-
-	UPROPERTY(EditAnywhere, Category = Config)
-	float LevelTime = 30.f;
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	int AmountOfLives = 3;
