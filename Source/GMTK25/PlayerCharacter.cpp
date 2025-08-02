@@ -84,6 +84,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 			directionToMouse.Z = 0.0f;
 			FRotator newRotation = directionToMouse.Rotation();
 			SetActorRotation(newRotation);
+			_CurrentFrame.ForwardVector = GetActorForwardVector();
 		}
 	}
 
