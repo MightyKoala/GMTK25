@@ -64,53 +64,24 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		if (APlayerController* playerController = Cast<APlayerController>(Controller))
 		{
-			/*FVector mouseWorldPosition, mouseWorldDirection;
-			playerController->DeprojectMousePositionToWorld(mouseWorldPosition, mouseWorldDirection);
-			auto mousePos = playerController->GetMousePosition();
-			playerController->DeprojectScreenPositionToWorld(mousePos.X, mousePos.Y, mouseWorldPosition, mouseWorldDirection)
-
-			float AngleRadians = FMath::Atan2(mouseWorldDirection.Y, mouseWorldDirection.X);
-
-			float SinValue = FMath::Sin(AngleRadians);
-
-			if (SinValue == 0)
-			{
-				UE_LOG(LogTemp, Error, TEXT("PlayerCharacter.h | SinValue 0 on mouse rotator"));
-				return;
-			}
-
-			float Distance = mouseWorldPosition.Z / SinValue;
-
-			FVector IntersectionPoint = mouseWorldPosition + (mouseWorldDirection * Distance);
-			IntersectionPoint.Z = 0.0f;*/
-
 			float MouseX, MouseY;
 			playerController->GetMousePosition(MouseX, MouseY);
 
 			FVector WorldLocation, WorldDirection;
 			playerController->DeprojectScreenPositionToWorld(MouseX, MouseY, WorldLocation, WorldDirection);
 
-			FVector ForwardVector = PlayerCamera->GetForwardVector();
+			float ZDifference = GetActorLocation().Z - WorldLocation.Z;
+			float Scale = ZDifference / WorldDirection.Z;
 
-			ForwardVector = FRotator(0.f, 180.f, 0.f).RotateVector(ForwardVector);
-
-			ForwardVector = WorldLocation - PlayerCamera->GetComponentLocation();
-			ForwardVector.Normalize();
-
-			// Calculate the target position at the specified height
-			// We need to find the intersection of the forward vector with the height plane
-			float ZDifference = 0.5f - WorldLocation.Z;
-			float Scale = ZDifference / ForwardVector.Z;
-
-			FVector TargetPosition = WorldLocation + (ForwardVector * Scale);
+			FVector TargetPosition = WorldLocation + (WorldDirection * Scale);
 
 			DrawDebugLine(GetWorld(), WorldLocation, TargetPosition, FColor::Red);
 			DrawDebugSphere(GetWorld(), TargetPosition, 100.f, 12, FColor::Red);
-			//UE_LOG(LogTemp, Warning, TEXT("Camera component Forward: X=%f, Y=%f, Z=%f"), mouseWorldDirection.X, mouseWorldDirection.Y, mouseWorldDirection.Z);
+			//UE_LOG(LogTemp, Warning, TEXT("Camera component Forward: X=%f, Y=%f, Z=%f"), ForwardVector.X, ForwardVector.Y, ForwardVector.Z);
 
 			FVector playerPos = GetActorLocation();
-			playerPos.Z = 0.0f;
 			FVector directionToMouse = TargetPosition - playerPos;
+			directionToMouse.Z = 0.0f;
 			FRotator newRotation = directionToMouse.Rotation();
 			SetActorRotation(newRotation);
 		}
