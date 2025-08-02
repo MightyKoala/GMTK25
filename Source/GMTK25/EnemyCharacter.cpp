@@ -73,6 +73,7 @@ void AEnemyCharacter::UpdateVision()
                     {
                         _TargetPlayer = Cast<ACharacterBase>(hitResult.GetActor());
                         _AlertTimer = _TimeToAlert;
+                        OnAlertEvent();
                     }
                 }
             }
@@ -107,6 +108,7 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 		if (_AlertTimer <= 0.f)
 		{
 			ShootAct(GetActorLocation(), GetActorForwardVector());
+            OnShootEvent();
 		}
 		else
 		{

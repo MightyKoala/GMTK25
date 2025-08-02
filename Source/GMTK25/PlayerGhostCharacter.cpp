@@ -18,5 +18,7 @@ void APlayerGhostCharacter::SimulateFrame(const PlayerFrameRecording& frame)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Shot fired! on frame %f"), frame.TimeStamp)
 		ShootAct(frame.Location, frame.ForwardVector);
+		UFUNCTION(BlueprintImplementableEvent, Category = "Shoot")
+		OnShootEvent();
 	}
 }

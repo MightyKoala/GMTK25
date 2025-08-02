@@ -23,6 +23,7 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Shoot")
 	void OnShootEvent();
+
 protected:
 	virtual void BeginPlay() override;
 

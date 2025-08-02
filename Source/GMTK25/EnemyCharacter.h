@@ -14,6 +14,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shoot")
+	void OnShootEvent();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Alert")
+	void OnAlertEvent();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Death")
+	void OnDeathEvent();
+
 protected:
 	virtual void BeginPlay() override;
 

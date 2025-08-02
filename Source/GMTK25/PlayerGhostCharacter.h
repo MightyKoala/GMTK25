@@ -13,4 +13,10 @@ class GMTK25_API APlayerGhostCharacter : public ACharacterBase
 public:
 	virtual void Tick(float DeltaTime) override;
 	void SimulateFrame(const PlayerFrameRecording& frame);
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shoot")
+	void OnShootEvent();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Death")
+	void OnDeathEvent();
 };
