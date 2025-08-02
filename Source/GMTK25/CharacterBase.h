@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Sound/SoundCue.h"
 #include "CharacterBase.generated.h"
 
 UCLASS(Abstract)
@@ -32,4 +33,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Gameplay")
 	int _MaxHealth = 1;
+
+	UPROPERTY(EditAnywhere, Category = "Gameplay")
+	USoundCue* GunSound;
 };

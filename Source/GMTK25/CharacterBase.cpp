@@ -78,6 +78,8 @@ void ACharacterBase::MoveAct(FVector2D movementVector)
 
 void ACharacterBase::ShootAct(FVector pos, FVector direction)
 {
+	UGameplayStatics::PlaySound2D(this, GunSound);//(UObject * WorldContextObject, class USoundBase* Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime);
+
 	FVector Start = GetActorLocation();
 	FVector End = Start + (direction * 10000);
 	_ShotDirection = End - Start;
