@@ -2,6 +2,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerSpawnPoint.h"
 #include "DefaultGameInstance.h"
+#include "Components/AudioComponent.h"
 
 ADefaultGameMode::ADefaultGameMode()
 {
@@ -90,14 +91,19 @@ void ADefaultGameMode::Tick(float DeltaTime)
 
 		if (TimeWarpTimer > 0.f)
 		{
-			if (IsPlayingTimeWarp == false && TimeWarpSound && IsValid(TimeWarpSound))
+			if (IsPlayingTimeWarp == false)
 			{
-				UGameplayStatics::PlaySound2D(this, TimeWarpSound);
+				MusicActorComponent->SetPitchMultiplier(0.3f);
+				TimeRewindComponent->Play();
+
 				IsPlayingTimeWarp = true;
+
+				//UGameplayStatics::SetGamePaused(GetWorld(), true);
 			}
 		}
 		else
 		{
+			//UGameplayStatics::SetGamePaused(GetWorld(), false);
 			ReloadLevel(true);
 		}
 	}

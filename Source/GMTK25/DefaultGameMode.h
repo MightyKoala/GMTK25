@@ -29,6 +29,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void CompleteMission();
 
+	UPROPERTY(BlueprintReadWrite, Category = Config)
+	UAudioComponent* TimeRewindComponent;
+
+	UPROPERTY(BlueprintReadWrite, Category = Config)
+	UAudioComponent* MusicActorComponent;
+
+	UPROPERTY(BlueprintReadWrite, Category = Config)
+	bool IsPlayingTimeWarp = false;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -40,12 +49,8 @@ protected:
 	void ToggleCompletionVisibility();
 	void TogglePauseScreenVisibility();
 
-	UPROPERTY(EditAnywhere, Category = Config)
-	USoundWave* TimeWarpSound;
-
 	const float TimeWarpTime = 2;
 	float TimeWarpTimer;
-	bool IsPlayingTimeWarp = false;
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	float LevelTime = 30.f;
