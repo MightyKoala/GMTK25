@@ -56,11 +56,6 @@ void ADefaultGameMode::SetLivesLeft(int lives)
 	AmountOfLives = lives;
 }
 
-void ADefaultGameMode::CompleteMission()
-{
-	ToggleCompletionVisibility();
-}
-
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();

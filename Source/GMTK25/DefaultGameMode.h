@@ -29,9 +29,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void SetLivesLeft(int lives);
-	UFUNCTION(BlueprintCallable, Category = "GameFlow")
-	void CompleteMission();
-
 
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	UAudioComponent* TimeRewindComponent;
