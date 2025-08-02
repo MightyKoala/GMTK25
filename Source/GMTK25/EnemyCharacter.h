@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Death")
 	void OnDeathEvent();
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* AlertSound;
+
 protected:
 	virtual void BeginPlay() override;
 
