@@ -73,5 +73,4 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
-enc_temp_folder/2eb4ae1e3a591dfb98de75b1b3346dcf/DefaultGameMode.h
-enc_temp_folder/e8aa5cb054ae46987c141f705f7070fb/DefaultGameMode.cpp
+enc_temp_folder/*
