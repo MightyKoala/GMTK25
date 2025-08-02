@@ -78,7 +78,14 @@ void ACharacterBase::MoveAct(FVector2D movementVector)
 
 void ACharacterBase::ShootAct(FVector pos, FVector direction)
 {
-	UGameplayStatics::PlaySound2D(this, GunSound);//(UObject * WorldContextObject, class USoundBase* Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime);
+	if (GunSound)
+	{
+		UGameplayStatics::PlaySound2D(this, GunSound);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Some Character is missing it's gun sound"));
+	}
 
 	FVector Start = GetActorLocation();
 	FVector End = Start + (direction * 10000);
