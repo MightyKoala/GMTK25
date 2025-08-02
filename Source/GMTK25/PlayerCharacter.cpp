@@ -82,32 +82,29 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (!IsAlive)
 		return;
 
+	
+	if (APlayerController* playerController = Cast<APlayerController>(Controller))
+	{
+		float MouseX, MouseY;
+		playerController->GetMousePosition(MouseX, MouseY);
+
+		FVector WorldLocation, WorldDirection;
+		playerController->DeprojectScreenPositionToWorld(MouseX, MouseY, WorldLocation, WorldDirection);
+
+		float ZDifference = GetActorLocation().Z - WorldLocation.Z;
+		float Scale = ZDifference / WorldDirection.Z;
+
+		FVector TargetPosition = WorldLocation + (WorldDirection * Scale);
+
+		FVector playerPos = GetActorLocation();
+		FVector directionToMouse = TargetPosition - playerPos;
+		directionToMouse.Z = 0.0f;
+		FRotator newRotation = directionToMouse.Rotation();
+		SetActorRotation(newRotation);
+	}
+
 	_CurrentFrame.Location = GetActorLocation();
 	_CurrentFrame.ForwardVector = GetActorForwardVector();
-	
-	if (FireRateTimer <= 0.f)
-	{
-		if (APlayerController* playerController = Cast<APlayerController>(Controller))
-		{
-			float MouseX, MouseY;
-			playerController->GetMousePosition(MouseX, MouseY);
-
-			FVector WorldLocation, WorldDirection;
-			playerController->DeprojectScreenPositionToWorld(MouseX, MouseY, WorldLocation, WorldDirection);
-
-			float ZDifference = GetActorLocation().Z - WorldLocation.Z;
-			float Scale = ZDifference / WorldDirection.Z;
-
-			FVector TargetPosition = WorldLocation + (WorldDirection * Scale);
-
-			FVector playerPos = GetActorLocation();
-			FVector directionToMouse = TargetPosition - playerPos;
-			directionToMouse.Z = 0.0f;
-			FRotator newRotation = directionToMouse.Rotation();
-			SetActorRotation(newRotation);
-			_CurrentFrame.ForwardVector = GetActorForwardVector();
-		}
-	}
 
 	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));

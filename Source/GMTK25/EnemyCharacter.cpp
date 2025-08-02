@@ -135,7 +135,7 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     if (_AlertTimer <= 0.f)
     {
         _AlertTimer = 0.f;
-        UE_LOG(LogTemp, Warning, TEXT("Enemy shot"));
+        //UE_LOG(LogTemp, Warning, TEXT("Enemy shot"));
         OnShootEvent();
     }
 }
