@@ -49,7 +49,6 @@ void APlayerCharacter::Move(const FInputActionValue& value)
 
 void APlayerCharacter::Shoot()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Shot Logged"));
 	if (FireRateTimer <= 0.f)
 		_CurrentFrame.ShootInput = true;
 	OnShootEvent();

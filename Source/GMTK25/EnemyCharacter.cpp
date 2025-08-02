@@ -22,10 +22,12 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
     if (_TargetPlayer == nullptr)
     {
+        UE_LOG(LogTemp, Warning, TEXT("Updating Vision"));
         UpdateVision();
     }
     else
     {
+        UE_LOG(LogTemp, Warning, TEXT("Updating Agression"));
         UpdateAggresion(DeltaTime);
     }
 }
@@ -109,7 +111,10 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     }
 
     if (_TargetPlayer == nullptr)
+    {
         return;
+    }
+
 
     FVector characterPosition = GetActorLocation();
 	FVector directionToPlayer = _TargetPlayer->GetActorLocation() - characterPosition;
@@ -125,14 +130,11 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 	if (_AlertTimer > 0.f)
 	{
 		_AlertTimer -= DeltaTime;
-
-		if (_AlertTimer <= 0.f)
-		{
-            OnShootEvent();
-		}
-		else
-		{
-			return;
-		}
 	}
+    if (_AlertTimer <= 0.f)
+    {
+        _AlertTimer = 0.f;
+        UE_LOG(LogTemp, Warning, TEXT("Enemy shot"));
+        OnShootEvent();
+    }
 }

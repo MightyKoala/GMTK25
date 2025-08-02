@@ -46,5 +46,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Gameplay")
 	USoundCue* GunSound;
-
+	UPROPERTY(EditAnywhere, Category = "Gameplay")
+	USoundCue* DeathSound;
 };
