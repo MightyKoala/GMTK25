@@ -86,7 +86,7 @@ void ACharacterBase::MoveAct(FVector2D movementVector)
 
 void ACharacterBase::ShootAct(FVector pos, FVector direction)
 {
-	if (GunSound)
+	if (GunSound && IsValid(GunSound ))
 	{
 		UGameplayStatics::PlaySound2D(this, GunSound);
 	}
