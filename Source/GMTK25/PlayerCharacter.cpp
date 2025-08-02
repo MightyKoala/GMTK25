@@ -44,6 +44,7 @@ void APlayerCharacter::Shoot()
 {
 	ShootAct(GetActorLocation(), GetActorForwardVector());
 	UE_LOG(LogTemp, Warning, TEXT("Shot Logged"));
+	OnShootEvent();
 	_CurrentFrame.ShootInput = true;
 }
 

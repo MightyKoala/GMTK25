@@ -20,7 +20,9 @@ public:
 	APlayerCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shoot")
+	void OnShootEvent();
 protected:
 	virtual void BeginPlay() override;
 
