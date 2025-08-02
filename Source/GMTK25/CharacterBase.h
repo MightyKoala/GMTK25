@@ -23,6 +23,7 @@ protected:
 	void MoveAct(FVector2D inputVector);
 	void OnPlayerDeath();
 	bool IsPlayer = false;
+	bool IsAlive = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	float FireRate = 0.5f;

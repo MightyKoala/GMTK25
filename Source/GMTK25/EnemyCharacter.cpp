@@ -17,6 +17,9 @@ void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (!IsAlive)
+        return;
+
     if (_TargetPlayer == nullptr)
     {
         UpdateVision();

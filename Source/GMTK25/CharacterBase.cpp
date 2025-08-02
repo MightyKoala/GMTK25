@@ -20,7 +20,8 @@ void ACharacterBase::DamageCharacter(int damage)
 	{
 		if(IsPlayer)
 			OnPlayerDeath();
-		Destroy();
+		IsAlive = false;
+		// Destroy();
 	}
 }
 
