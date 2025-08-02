@@ -87,6 +87,18 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     {
         _TargetPlayer = nullptr;
     }
+    FHitResult hitResult;
+    FCollisionQueryParams collisionParams;
+    collisionParams.AddIgnoredActor(this);
+
+    if (_TargetPlayer && GetWorld()->LineTraceSingleByChannel(hitResult, GetActorLocation(), _TargetPlayer->GetActorLocation(), ECC_Visibility, collisionParams))
+    {
+        if (hitResult.GetActor() != _TargetPlayer)
+        {
+            _TargetPlayer = nullptr;
+        }
+    }
+
     if (_ShotStationaryTimer > 0.f || _TargetPlayer == nullptr)
         return;
 
