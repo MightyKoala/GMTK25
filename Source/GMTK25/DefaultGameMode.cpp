@@ -42,6 +42,16 @@ void ADefaultGameMode::UnpauseGame()
 	TogglePauseScreenVisibility();
 }
 
+int ADefaultGameMode::GetLivesLeft()
+{
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GameInstance)
+	{
+		return AmountOfLives - GameInstance->GetDeathCount();
+	}
+	return 0;
+}
+
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();

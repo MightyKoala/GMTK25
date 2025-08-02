@@ -24,6 +24,8 @@ public:
 	void ReloadLevel(bool isCausedByDeath);
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void UnpauseGame();
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
+	int GetLivesLeft();
 
 protected:
 
