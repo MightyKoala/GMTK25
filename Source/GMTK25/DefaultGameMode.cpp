@@ -52,6 +52,11 @@ int ADefaultGameMode::GetLivesLeft()
 	return 0;
 }
 
+void ADefaultGameMode::CompleteMission()
+{
+	ToggleCompletionVisibility();
+}
+
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();

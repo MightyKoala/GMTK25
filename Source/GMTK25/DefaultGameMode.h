@@ -26,6 +26,8 @@ public:
 	void UnpauseGame();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	int GetLivesLeft();
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
+	void CompleteMission();
 
 protected:
 
