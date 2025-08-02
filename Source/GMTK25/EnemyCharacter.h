@@ -26,7 +26,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	USoundCue* AlertSound;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation/EnemyState")
+	bool IsAlerted = false;
 protected:
 	virtual void BeginPlay() override;
 
