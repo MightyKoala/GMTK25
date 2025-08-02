@@ -18,7 +18,7 @@ public:
 
 	float GetLevelMaxTime() { return LevelTime; }
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
-	FString GetLevelTimerString() { return FString::Printf(TEXT("%.2f"), LevelTimer); };
+	FString GetLevelTimerString() { return FString::Printf(TEXT("%.1f"), LevelTimer); };
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	float GetLevelTimer() { return LevelTimer; }
 	void ReloadLevel(bool isCausedByDeath);
@@ -38,6 +38,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool IsPlayingTimeWarp = false;
 
+	float LevelTimer;
 protected:
 
 	virtual void BeginPlay() override;
@@ -54,7 +55,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	float LevelTime = 30.f;
-	float LevelTimer;
 
 	UPROPERTY(EditAnywhere, Category = Config)
 	int AmountOfLives = 3;
