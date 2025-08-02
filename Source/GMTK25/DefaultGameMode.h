@@ -26,8 +26,6 @@ public:
 	void UnpauseGame();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	int GetLivesLeft();
-	UFUNCTION(BlueprintCallable, Category = "GameFlow")
-	void CompleteMission();
 
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	UAudioComponent* TimeRewindComponent;
@@ -47,7 +45,6 @@ protected:
 	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
 	FVector GetNextSpawnPoint();
 	void ToggleGameOverVisibility();
-	void ToggleCompletionVisibility();
 	void TogglePauseScreenVisibility();
 
 	const float TimeWarpTime = 2;
@@ -66,8 +63,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverScreen;
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> MissionSuccessScreen;
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> PauseScreen;
 

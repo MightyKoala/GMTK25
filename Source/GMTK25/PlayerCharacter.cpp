@@ -54,9 +54,28 @@ void APlayerCharacter::Shoot()
 	OnShootEvent();
 }
 
+void APlayerCharacter::FastForwardTime()
+{
+	TargetTimeDilation = 3.f;
+}
+
+void APlayerCharacter::StopFastForward()
+{
+	TargetTimeDilation = 1.f;
+}
+
+void APlayerCharacter::UpdateTimeDilation(float DeltaTime)
+{
+	FastforwardLerpValue = FMath::FInterpTo(FastforwardLerpValue, TargetTimeDilation, DeltaTime, TimeDilationSpeed);
+
+	UGameplayStatics::SetGlobalTimeDilation(this, FastforwardLerpValue);
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UpdateTimeDilation(DeltaTime);
 
 	if (!IsAlive)
 		return;
@@ -106,6 +125,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		enhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		enhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
+		enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Triggered, this, &APlayerCharacter::FastForwardTime);
+		enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFastForward);
 	}
 }
 
