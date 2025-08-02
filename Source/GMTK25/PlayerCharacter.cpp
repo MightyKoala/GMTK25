@@ -58,6 +58,10 @@ void APlayerCharacter::Shoot()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!IsAlive)
+		return;
+
 	_CurrentFrame.Location = GetActorLocation();
 	_CurrentFrame.ForwardVector = GetActorForwardVector();
 	

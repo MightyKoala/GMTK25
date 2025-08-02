@@ -3,6 +3,10 @@
 void APlayerGhostCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!IsAlive)
+		return;
+
 	SetActorRotation(LastDirection.Rotation());
 }
 
