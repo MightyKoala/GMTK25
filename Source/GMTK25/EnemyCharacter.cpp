@@ -87,6 +87,7 @@ void AEnemyCharacter::UpdateVision()
                             continue;
                         _TargetPlayer = targetPlayer;
                         _AlertTimer = _TimeToAlert;
+                        _LoseTargetTimer = _TimeToLoseTarget;
                         OnAlertEvent();
                         IsAlerted = true;
                     }
@@ -105,6 +106,7 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     if (!IsValid(_TargetPlayer) || !_TargetPlayer->IsAlive)
     {
         _TargetPlayer = nullptr;
+        return;
     }
     FHitResult hitResult;
     FCollisionQueryParams collisionParams;
@@ -114,15 +116,16 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     {
         if (hitResult.GetActor() != _TargetPlayer)
         {
-            _TargetPlayer = nullptr;
+            _LoseTargetTimer -= DeltaTime;
+            if(_LoseTargetTimer <= 0.f)
+				_TargetPlayer = nullptr;
+            return;
+        }
+        else
+        {
+            _LoseTargetTimer = _TimeToLoseTarget;
         }
     }
-
-    if (_TargetPlayer == nullptr)
-    {
-        return;
-    }
-
 
     FVector characterPosition = GetActorLocation();
 	FVector directionToPlayer = _TargetPlayer->GetActorLocation() - characterPosition;
