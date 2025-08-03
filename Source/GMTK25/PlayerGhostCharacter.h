@@ -21,5 +21,6 @@ public:
 	void OnDeathEvent();
 
 protected:
+	virtual void BeginPlay() override;
 	FVector LastDirection;
 };

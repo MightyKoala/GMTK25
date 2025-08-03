@@ -7,7 +7,7 @@ void APlayerGhostCharacter::Tick(float DeltaTime)
 	if (!IsAlive)
 		return;
 
-	//SetActorRotation(LastDirection.Rotation());
+	SetActorRotation(LastDirection.Rotation());
 }
 
 void APlayerGhostCharacter::SimulateFrame(const PlayerFrameRecording& frame)
@@ -21,4 +21,9 @@ void APlayerGhostCharacter::SimulateFrame(const PlayerFrameRecording& frame)
 	{
 		OnShootEvent();
 	}
+}
+
+void APlayerGhostCharacter::BeginPlay()
+{
+	PrimaryActorTick.bCanEverTick = true;
 }
