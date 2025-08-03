@@ -64,6 +64,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool LevelCompleted;
 	float LevelStartTimer;
+	void TogglePauseScreenVisibility();
 protected:
 
 	virtual void BeginPlay() override;
@@ -72,7 +73,6 @@ protected:
 	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
 	FVector GetNextSpawnPoint();
 	void ToggleGameOverVisibility();
-	void TogglePauseScreenVisibility();
 
 	float TimeWarpTimer;
 	float PlayerDeathTimer;

@@ -37,6 +37,10 @@ protected:
 	UInputAction* ShootAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* FFAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* EscapeMenuAction;
+
 	UPROPERTY(EditAnywhere, Category = Input)
 	float FastForwardMultiplier = 3.f;
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -53,6 +57,7 @@ protected:
 	void FastForwardTime();
 	void StopFastForward();
 	void UpdateTimeDilation(float DeltaTime);
+	void TogglePauseMenu();
 private:
 	PlayerFrameRecording _CurrentFrame;
 	float TargetTimeDilation = 1.f;

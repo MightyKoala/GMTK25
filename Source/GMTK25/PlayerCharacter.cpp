@@ -78,6 +78,16 @@ void APlayerCharacter::UpdateTimeDilation(float DeltaTime)
 	UGameplayStatics::SetGlobalTimeDilation(this, FastforwardLerpValue);
 }
 
+void APlayerCharacter::TogglePauseMenu()
+{
+	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		GameMode->TogglePauseScreenVisibility();
+	}
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -89,7 +99,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
 
-	if (GameMode->LevelStartTimer > 0.f)
+	if (GameMode && GameMode->LevelStartTimer > 0.f)
 	{
 		return;
 	}
@@ -147,6 +157,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//Fast forward doesn't work :(
 		//enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Triggered, this, &APlayerCharacter::FastForwardTime);
 		//enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFastForward);
+		enhancedInputComponent->BindAction(EscapeMenuAction, ETriggerEvent::Started, this, &APlayerCharacter::TogglePauseMenu);
 	}
 }
 
