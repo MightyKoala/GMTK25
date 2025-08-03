@@ -94,7 +94,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 		playerController->SetAudioListenerOverride(nullptr, GetActorLocation(), FVector(1.f, 0.f, 0.f).Rotation());
 		FVector OutLoc, OutForward, OutRight;
 		playerController->GetAudioListenerPosition(OutLoc, OutForward, OutRight);
-		DrawDebugSphere(GetWorld(), OutLoc, 100.f, 12, FColor::Magenta);
 
 		if (GameMode && GameMode->IsLevelOver())
 		{
