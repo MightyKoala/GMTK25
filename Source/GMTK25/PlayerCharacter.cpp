@@ -92,9 +92,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
-		FVector OutLoc, OutForward, OutRight;
-		playerController->GetAudioListenerPosition(OutLoc, OutForward, OutRight);
-
 		if (GameMode && GameMode->IsLevelOver())
 		{
 			DisableInput(playerController);
