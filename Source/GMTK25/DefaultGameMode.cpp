@@ -62,6 +62,12 @@ bool ADefaultGameMode::IsLevelOver()
 	return LevelCompleted || LevelTimer <= 0.f;
 }
 
+void ADefaultGameMode::SetLevelTime(float time)
+{
+	LevelTime = time;
+	LevelTimer = LevelTime;
+}
+
 void ADefaultGameMode::SetLivesLeft(int lives)
 {
 	AmountOfLives = lives;

@@ -25,5 +25,7 @@ void APlayerGhostCharacter::SimulateFrame(const PlayerFrameRecording& frame)
 
 void APlayerGhostCharacter::BeginPlay()
 {
+	Super::BeginPlay();
+
 	PrimaryActorTick.bCanEverTick = true;
 }
