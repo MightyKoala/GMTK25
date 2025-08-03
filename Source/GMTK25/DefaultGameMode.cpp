@@ -80,6 +80,7 @@ void ADefaultGameMode::BeginPlay()
 	TimeWarpTimer = TimeWarpTime;
 	PlayerDeathTimer = PlayerDeathExtraTime;
 	LevelCompleteTimer = LevelCompleteTime;
+	LevelStartTimer = LevelStartTime;
 	PlayBackTimer = 0.f;
 	GhostPlayers.Empty();
 	PlayBackIndexes.Empty();
@@ -104,6 +105,14 @@ void ADefaultGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+
+	if (LevelStartTimer > 0.f)
+	{
+		LevelStartTimer -= DeltaTime;
+		if (LevelStartTimer <= 0.f)
+			LevelStartTimer = 0.f;
+		return;
+	}
 
 	if (LevelCompleted)
 	{

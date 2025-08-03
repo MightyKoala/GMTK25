@@ -40,6 +40,8 @@ public:
 	float PlayerDeathExtraTime = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
 	float LevelCompleteTime = 3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
+	float LevelStartTime = 1.5;
 
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void SetLivesLeft(int lives);
@@ -59,6 +61,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	float LevelTimer;
 	bool PlayerDied;
+	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool LevelCompleted;
 protected:
 
@@ -73,15 +76,18 @@ protected:
 	float TimeWarpTimer;
 	float PlayerDeathTimer;
 	float LevelCompleteTimer;
+	float LevelStartTimer;
 	FString NextLevelName;
 
-	UPROPERTY(EditAnywhere, Category = Config)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config)
 	int AmountOfLives = 3;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<APlayerGhostCharacter> PlayerReplayPawn;
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<APlayerCharacter> PlayerToSpawn;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
+	USoundCue* MissionStartSound;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverScreen;
