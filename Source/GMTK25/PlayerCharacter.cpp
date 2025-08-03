@@ -35,7 +35,6 @@ void APlayerCharacter::BeginPlay()
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
 		playerController->SetShowMouseCursor(true);
-		playerController->SetAudioListenerOverride(GetMesh(), GetActorLocation(), GetActorRotation());
 		if (UEnhancedInputLocalPlayerSubsystem* subSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
 			subSystem->AddMappingContext(_InputContext, 0);
@@ -92,6 +91,11 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
+		playerController->SetAudioListenerOverride(nullptr, GetActorLocation(), FVector(1.f, 0.f, 0.f).Rotation());
+		FVector OutLoc, OutForward, OutRight;
+		playerController->GetAudioListenerPosition(OutLoc, OutForward, OutRight);
+		DrawDebugSphere(GetWorld(), OutLoc, 100.f, 12, FColor::Magenta);
+
 		if (GameMode && GameMode->IsLevelOver())
 		{
 			DisableInput(playerController);
