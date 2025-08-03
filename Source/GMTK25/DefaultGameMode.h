@@ -63,6 +63,7 @@ public:
 	bool PlayerDied;
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool LevelCompleted;
+	float LevelStartTimer;
 protected:
 
 	virtual void BeginPlay() override;
@@ -76,7 +77,6 @@ protected:
 	float TimeWarpTimer;
 	float PlayerDeathTimer;
 	float LevelCompleteTimer;
-	float LevelStartTimer;
 	FString NextLevelName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config)

@@ -104,16 +104,35 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-
 	if (LevelStartTimer > 0.f)
 	{
 		LevelStartTimer -= DeltaTime;
-		if (LevelStartTimer <= 0.f)
-			LevelStartTimer = 0.f;
+
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		if (PlayerController)
+		{
+			APawn* ControlledPawn = PlayerController->GetPawn();
+			if (ControlledPawn)
+			{
+				// Cast to your specific character class if needed
+				APlayerCharacter* player = Cast<APlayerCharacter>(ControlledPawn);
+				if (player)
+				{
+					if (LevelStartTimer <= 0.f)
+					{
+						player->EnableInput(PlayerController);
+					}
+					else
+					{
+						player->DisableInput(PlayerController);
+					}
+				}
+			}
+		}
 		return;
 	}
 
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (LevelCompleted)
 	{
 		LevelCompleteTimer -= DeltaTime;

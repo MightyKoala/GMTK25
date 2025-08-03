@@ -88,6 +88,11 @@ void APlayerCharacter::Tick(float DeltaTime)
 		return;
 
 	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode->LevelStartTimer > 0.f)
+	{
+		return;
+	}
 	
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
