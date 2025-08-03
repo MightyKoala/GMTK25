@@ -144,8 +144,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		enhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		enhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
-		enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Triggered, this, &APlayerCharacter::FastForwardTime);
-		enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFastForward);
+		//Fast forward doesn't work :(
+		//enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Triggered, this, &APlayerCharacter::FastForwardTime);
+		//enhancedInputComponent->BindAction(FFAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFastForward);
 	}
 }
 
