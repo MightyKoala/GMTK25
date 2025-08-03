@@ -51,6 +51,11 @@ void APlayerCharacter::Shoot()
 {
 	if (!IsAlive)
 		return;
+	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode && GameMode->IsLevelOver())
+	{
+		return;
+	}
 	if (FireRateTimer <= 0.f)
 		_CurrentFrame.ShootInput = true;
 	OnShootEvent();
@@ -82,9 +87,16 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (!IsAlive)
 		return;
 
+	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
 	
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
+		if (GameMode && GameMode->IsLevelOver())
+		{
+			DisableInput(playerController);
+			return;
+		}
+
 		float MouseX, MouseY;
 		playerController->GetMousePosition(MouseX, MouseY);
 
@@ -106,7 +118,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	_CurrentFrame.Location = GetActorLocation();
 	_CurrentFrame.ForwardVector = GetActorForwardVector();
 
-	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (GameMode && GameInstance && GameMode->GetLevelTimer() > 0.f)
 	{

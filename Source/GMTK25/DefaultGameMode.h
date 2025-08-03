@@ -29,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void CompleteLevel(FString nextLevel);
 
+	UFUNCTION(BlueprintCallable, Category = "GameFlow")
+	bool IsLevelOver();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
 	float TimeWarpTime = 2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")

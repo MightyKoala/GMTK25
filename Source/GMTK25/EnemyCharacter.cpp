@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "DefaultGameMode.h"
 #include "Engine/World.h"
 
 AEnemyCharacter::AEnemyCharacter()
@@ -19,6 +20,12 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
     if (!IsAlive)
         return;
+
+    ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
+    if (GameMode && GameMode->IsLevelOver())
+    {
+        return;
+    }
 
     if (_TargetPlayer == nullptr)
     {

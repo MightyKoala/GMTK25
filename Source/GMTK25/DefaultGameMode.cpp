@@ -57,12 +57,15 @@ void ADefaultGameMode::CompleteLevel(FString nextLevel)
 	NextLevelName = nextLevel;
 }
 
+bool ADefaultGameMode::IsLevelOver()
+{
+	return LevelCompleted || LevelTimer <= 0.f;
+}
+
 void ADefaultGameMode::SetLivesLeft(int lives)
 {
 	AmountOfLives = lives;
 }
-
-
 
 void ADefaultGameMode::BeginPlay()
 {
@@ -94,6 +97,8 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+
 	if (LevelCompleted)
 	{
 		LevelCompleteTimer -= DeltaTime;
@@ -102,6 +107,10 @@ void ADefaultGameMode::Tick(float DeltaTime)
 			UWorld* World = GetWorld();
 			if (World)
 			{
+				if (GameInstance)
+				{
+					GameInstance->ResetGameInstance();
+				}
 				if (NextLevelName == "")
 				{
 					UGameplayStatics::OpenLevel(World, FName("BP_MainMenu"));
@@ -147,16 +156,17 @@ void ADefaultGameMode::Tick(float DeltaTime)
 		{
 			ReloadLevel();
 		}
+		return;
 	}
 
-	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (!GhostPlayers.IsEmpty() && GameInstance)
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("PlaybackTimer: %f"), PlayBackTimer);
 		PlayBackTimer += DeltaTime;
 
 		for (int ghostIndex = 0; ghostIndex < GhostPlayers.Num(); ghostIndex++)
 		{
-			if (!IsValid(GhostPlayers[ghostIndex]))
+			if (!IsValid(GhostPlayers[ghostIndex]) || !GhostPlayers[ghostIndex]->IsAlive)
 				continue;
 			int frameCount = GameInstance->GetRecordedPlayerFrames(ghostIndex).Num();
 			int lastPlaybackIndex = PlayBackIndexes[ghostIndex];
@@ -167,7 +177,7 @@ void ADefaultGameMode::Tick(float DeltaTime)
 				{
 					if (!IsValid(GhostPlayers[ghostIndex]))
 						break;
-					//UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost!"), frameIndex);
+					//UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost! from timestamp: %f"), frameIndex, frame.TimeStamp);
 					GhostPlayers[ghostIndex]->SimulateFrame(frame);
 					PlayBackIndexes[ghostIndex] = frameIndex;
 				}
@@ -221,6 +231,11 @@ FVector ADefaultGameMode::GetNextSpawnPoint()
 				currentSpawnPoint->SetIsUsed(true);
 			}
 		}
+	}
+
+	if (spawnPos == FVector::Zero())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No spawn point found for ghost"))
 	}
 	return spawnPos;
 }
