@@ -251,21 +251,27 @@ FVector ADefaultGameMode::GetNextSpawnPoint()
 	TArray<AActor*> spawnPoints;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerSpawnPoint::StaticClass(), spawnPoints);
 	FVector spawnPos = FVector::Zero();
-	int lowestSpawnOrderIndex = INT_MAX;
+	int lowestSpawnOrderIndex = -1;
+	int lowestSpawnOrder = INT_MAX;
 
-	for (AActor* spawnPoint : spawnPoints)
+	for (int i = 0; i < spawnPoints.Num(); i++)
 	{
-		if (APlayerSpawnPoint* currentSpawnPoint = Cast<APlayerSpawnPoint>(spawnPoint))
+		if (APlayerSpawnPoint* currentSpawnPoint = Cast<APlayerSpawnPoint>(spawnPoints[i]))
 		{
-			int spawnOrder = currentSpawnPoint->GetSpawnOrderIndex();
-			if (spawnOrder < lowestSpawnOrderIndex && !currentSpawnPoint->IsAlreadyUsed())
+			if (currentSpawnPoint->IsAlreadyUsed())
 			{
-				lowestSpawnOrderIndex = spawnOrder;
+				UE_LOG(LogTemp, Warning, TEXT("Spawn index %d is already used"), spawnOrder);
+			}
+			int spawnOrder = currentSpawnPoint->GetSpawnOrderIndex();
+			if (spawnOrder < lowestSpawnOrder && !currentSpawnPoint->IsAlreadyUsed())
+			{
+				lowestSpawnOrderIndex = i;
+				lowestSpawnOrder = spawnOrder;
 			}
 		}
 	}
 
-	if (lowestSpawnOrderIndex != INT_MAX)
+	if (lowestSpawnOrderIndex >= 0)
 	{
 		APlayerSpawnPoint* bestSpawnPoint = Cast<APlayerSpawnPoint>(spawnPoints[lowestSpawnOrderIndex]);
 		spawnPos = bestSpawnPoint->GetActorLocation();
