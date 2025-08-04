@@ -258,10 +258,6 @@ FVector ADefaultGameMode::GetNextSpawnPoint()
 	{
 		if (APlayerSpawnPoint* currentSpawnPoint = Cast<APlayerSpawnPoint>(spawnPoints[i]))
 		{
-			if (currentSpawnPoint->IsAlreadyUsed())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Spawn index %d is already used"), spawnOrder);
-			}
 			int spawnOrder = currentSpawnPoint->GetSpawnOrderIndex();
 			if (spawnOrder < lowestSpawnOrder && !currentSpawnPoint->IsAlreadyUsed())
 			{

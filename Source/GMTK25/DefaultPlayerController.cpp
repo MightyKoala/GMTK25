@@ -3,20 +3,24 @@
 
 #include "DefaultPlayerController.h"
 
-ADefaultPlayerController::ADefaultPlayerController()
+ADefaultPlayerController::ADefaultPlayerController() : APlayerController()
 {
 }
 
 void ADefaultPlayerController::BeginPlay()
 {
+	Super::BeginPlay();
+	FInputModeGameAndUI InputMode;
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+	SetInputMode(InputMode);
 }
 
 void ADefaultPlayerController::SetupInputComponent()
 {
+	Super::SetupInputComponent();
 }
 
 void ADefaultPlayerController::Tick(float DeltaTime)
 {
-	FVector worldPosition, worldDirection;
-	DeprojectMousePositionToWorld(worldPosition, worldDirection);
+	Super::Tick(DeltaTime);
 }

@@ -34,6 +34,9 @@ void APlayerCharacter::BeginPlay()
 	
 	if (APlayerController* playerController = Cast<APlayerController>(Controller))
 	{
+		FInputModeGameAndUI InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		playerController->SetInputMode(InputMode);
 		playerController->SetShowMouseCursor(true);
 		if (UEnhancedInputLocalPlayerSubsystem* subSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
