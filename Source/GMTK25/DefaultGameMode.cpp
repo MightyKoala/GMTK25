@@ -273,6 +273,11 @@ FVector ADefaultGameMode::GetNextSpawnPoint()
 		spawnPos = bestSpawnPoint->GetActorLocation();
 		bestSpawnPoint->SetIsUsed(true);
 	}
+	else if (spawnPoints.Num() > 0) //Backup to prevent spawning bug where player spawns at Vector::Zero for no reason
+	{
+		APlayerSpawnPoint* backupSpawnPoint = Cast<APlayerSpawnPoint>(spawnPoints[0]);
+		spawnPos = backupSpawnPoint->GetActorLocation();
+	}
 	return spawnPos;
 }
 
