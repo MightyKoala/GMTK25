@@ -261,15 +261,15 @@ FVector ADefaultGameMode::GetNextSpawnPoint()
 			if (spawnOrder < lowestSpawnOrderIndex && !currentSpawnPoint->IsAlreadyUsed())
 			{
 				lowestSpawnOrderIndex = spawnOrder;
-				spawnPos = currentSpawnPoint->GetActorLocation();
-				currentSpawnPoint->SetIsUsed(true);
 			}
 		}
 	}
 
-	if (spawnPos == FVector::Zero())
+	if (lowestSpawnOrderIndex != INT_MAX)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No spawn point found for ghost"))
+		APlayerSpawnPoint* bestSpawnPoint = Cast<APlayerSpawnPoint>(spawnPoints[lowestSpawnOrderIndex]);
+		spawnPos = bestSpawnPoint->GetActorLocation();
+		bestSpawnPoint->SetIsUsed(true);
 	}
 	return spawnPos;
 }
