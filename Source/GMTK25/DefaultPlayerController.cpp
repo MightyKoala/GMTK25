@@ -4,7 +4,7 @@
 #include "DefaultGameMode.h"
 #include "PlayerCharacter.h"
 
-ADefaultPlayerController::ADefaultPlayerController() : APlayerController()
+ADefaultPlayerController::ADefaultPlayerController()
 {
 }
 
