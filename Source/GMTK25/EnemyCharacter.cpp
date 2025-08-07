@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EnemyCharacter.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/Actor.h"
@@ -145,7 +142,6 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     if (_AlertTimer <= 0.f)
     {
         _AlertTimer = 0.f;
-        //UE_LOG(LogTemp, Warning, TEXT("Enemy shot"));
         OnShootEvent();
     }
 }

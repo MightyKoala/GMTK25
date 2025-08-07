@@ -18,25 +18,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Death")
 	void DamageCharacter(int damage = 1);
 	UFUNCTION(BlueprintImplementableEvent, Category = "Death")
+	//Rename to OnDeath
 	void DeathEvent();
+	void MoveAct(FVector2D inputVector);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation/EnemyState")
 	bool IsAlive = true;
-protected:
-	virtual void BeginPlay() override;
-	void MoveAct(FVector2D inputVector);
-	void OnPlayerDeath();
-	bool IsPlayer = false;
-	//bool IsAlive = true;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	float FireRate = 0.5f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	float FireRateTimer = 0.f;
+protected:
+	virtual void BeginPlay() override;
 
+	//Used for animation
 	UFUNCTION(BlueprintImplementableEvent, Category = "OnMove")
 	void OnMoveEvent();
-	
 	UFUNCTION(BlueprintImplementableEvent, Category = "OnStandStill")
 	void OnStandStillEvent();
 

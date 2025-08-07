@@ -12,7 +12,6 @@ void APlayerGhostCharacter::Tick(float DeltaTime)
 
 void APlayerGhostCharacter::SimulateFrame(const PlayerFrameRecording& frame)
 {
-	//MoveAct(frame.MovementInput);
 	SetActorLocation(frame.Location);
 	LastDirection = frame.ForwardVector;
 	SetActorRotation(frame.ForwardVector.Rotation());

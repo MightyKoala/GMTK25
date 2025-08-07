@@ -1,12 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerGhostCharacter.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "PlayerFrameRecording.h"
 #include "Blueprint/UserWidget.h"
 #include "DefaultGameMode.generated.h"
+
+class APlayerGhostCharacter;
 
 UCLASS()
 class GMTK25_API ADefaultGameMode : public AGameModeBase
@@ -16,11 +17,8 @@ class GMTK25_API ADefaultGameMode : public AGameModeBase
 public:
 	ADefaultGameMode();
 
-	float GetLevelMaxTime() { return LevelTime; }
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	FString GetLevelTimerString() { return FString::Printf(TEXT("%.1f"), LevelTimer); };
-	UFUNCTION(BlueprintCallable, Category = "GameFlow")
-	float GetLevelTimer() { return LevelTimer; }
 	void ReloadLevel();
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void UnpauseGame();
@@ -43,8 +41,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameFlow")
 	float LevelStartTime = 1.5;
 
-	UFUNCTION(BlueprintCallable, Category = "GameFlow")
-	void SetLivesLeft(int lives);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config)
+	int AmountOfLives = 3;
 
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	UAudioComponent* TimeRewindComponent;
@@ -55,18 +53,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool IsPlayingTimeWarp = false;
 
-	UPROPERTY(EditAnywhere, Category = Config)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config)
 	float LevelTime = 30.f;
 
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	float LevelTimer;
+	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool PlayerDied;
 	UPROPERTY(BlueprintReadWrite, Category = Config)
 	bool LevelCompleted;
 	float LevelStartTimer;
 	void TogglePauseScreenVisibility();
 protected:
-
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	void SpawnPlayer();
@@ -78,9 +76,6 @@ protected:
 	float PlayerDeathTimer;
 	float LevelCompleteTimer;
 	FString NextLevelName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config)
-	int AmountOfLives = 3;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<APlayerGhostCharacter> PlayerReplayPawn;

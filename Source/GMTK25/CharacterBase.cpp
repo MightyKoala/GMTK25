@@ -4,10 +4,8 @@
 #include "DefaultGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values
 ACharacterBase::ACharacterBase()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	FireRateTimer = 0.f;
 	_Health = _MaxHealth;
@@ -18,24 +16,11 @@ void ACharacterBase::DamageCharacter(int damage)
 	_Health -= damage;
 	if (_Health <= 0)
 	{
-		if(IsPlayer)
-			OnPlayerDeath();
 		IsAlive = false;
 		DeathEvent();
-		// Destroy();
 		if(DeathSound && IsValid(DeathSound))
 			UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 		SetActorEnableCollision(false);
-	}
-}
-
-void ACharacterBase::OnPlayerDeath()
-{
-	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
-	if (GameMode)
-	{
-		GameMode->LevelTimer = 0;
-		GameMode->PlayerDied = true;
 	}
 }
 

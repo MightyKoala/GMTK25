@@ -3,6 +3,9 @@
 #include "PlayerSpawnPoint.h"
 #include "DefaultGameInstance.h"
 #include "Components/AudioComponent.h"
+#include "DefaultPlayerController.h"
+#include "PlayerGhostCharacter.h"
+#include "GameFramework/PlayerState.h"
 
 ADefaultGameMode::ADefaultGameMode()
 {
@@ -68,11 +71,6 @@ void ADefaultGameMode::SetLevelTime(float time)
 	LevelTimer = LevelTime;
 }
 
-void ADefaultGameMode::SetLivesLeft(int lives)
-{
-	AmountOfLives = lives;
-}
-
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -108,7 +106,7 @@ void ADefaultGameMode::Tick(float DeltaTime)
 	{
 		LevelStartTimer -= DeltaTime;
 
-		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		ADefaultPlayerController* PlayerController = Cast<ADefaultPlayerController>(GetWorld()->GetFirstPlayerController());
 		if (PlayerController)
 		{
 			APawn* ControlledPawn = PlayerController->GetPawn();
