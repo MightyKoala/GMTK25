@@ -30,6 +30,7 @@ void ADefaultPlayerController::SetupInputComponent()
 	{
 		enhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ADefaultPlayerController::Move);
 		enhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &ADefaultPlayerController::Shoot);
+		enhancedInputComponent->BindAction(RecordAction, ETriggerEvent::Triggered, this, &ADefaultPlayerController::StartRecording);
 		enhancedInputComponent->BindAction(EscapeMenuAction, ETriggerEvent::Started, this, &ADefaultPlayerController::TogglePauseMenu);
 	}
 }
@@ -37,6 +38,8 @@ void ADefaultPlayerController::SetupInputComponent()
 void ADefaultPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	ShotInput = false;
 }
 
 void ADefaultPlayerController::Move(const FInputActionValue& value)
@@ -52,14 +55,18 @@ void ADefaultPlayerController::Shoot()
 		return;
 	if (!player->IsAlive)
 		return;
-	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
-	if (GameMode && GameMode->IsLevelOver())
-	{
-		return;
-	}
-	if (player->FireRateTimer <= 0.f)
-		player->_CurrentFrame.ShootInput = true;
+	ShotInput = true;
 	player->OnShootEvent();
+}
+
+void ADefaultPlayerController::StartRecording()
+{
+	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		GameMode->StartRecordingFrames();
+	}
 }
 
 void ADefaultPlayerController::TogglePauseMenu()

@@ -1,10 +1,8 @@
 #include "PlayerCharacter.h"
-#include "DefaultGameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
-#include "DefaultGameInstance.h"
 #include "DefaultPlayerController.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -18,9 +16,19 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCamera->SetupAttachment(CameraSpringArm);
 }
 
+bool APlayerCharacter::GetShotInput()
+{
+	if (ADefaultPlayerController* playerController = Cast<ADefaultPlayerController>(Controller))
+	{
+		return playerController->ShotInput;
+	}
+	return false;
+}
+
 void APlayerCharacter::BeginPlay()
 {
-	Super::BeginPlay();		FInputModeGameAndUI InputMode;
+	Super::BeginPlay();
+	FInputModeGameAndUI InputMode;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -30,24 +38,11 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (!IsAlive)
 		return;
 
-	ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
-
-	if (GameMode && GameMode->LevelStartTimer > 0.f)
-	{
-		return;
-	}
-	
 	if (ADefaultPlayerController* playerController = Cast<ADefaultPlayerController>(Controller))
 	{
 		playerController->SetAudioListenerOverride(nullptr, GetActorLocation(), FVector(1.f, 0.f, 0.f).Rotation());
 		FVector OutLoc, OutForward, OutRight;
 		playerController->GetAudioListenerPosition(OutLoc, OutForward, OutRight);
-
-		if (GameMode && GameMode->IsLevelOver())
-		{
-			DisableInput(playerController);
-			return;
-		}
 
 		float MouseX, MouseY;
 		playerController->GetMousePosition(MouseX, MouseY);
@@ -66,15 +61,4 @@ void APlayerCharacter::Tick(float DeltaTime)
 		FRotator newRotation = directionToMouse.Rotation();
 		SetActorRotation(newRotation);
 	}
-
-	_CurrentFrame.Location = GetActorLocation();
-	_CurrentFrame.ForwardVector = GetActorForwardVector();
-
-	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GameMode && GameInstance && GameMode->LevelTime > 0.f)
-	{
-		_CurrentFrame.TimeStamp = GameMode->LevelTime - GameMode->LevelTime;
-		GameInstance->RecordFrame(_CurrentFrame);
-	}
-	_CurrentFrame.Reset();
 }

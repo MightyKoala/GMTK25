@@ -17,9 +17,11 @@ public:
 	virtual void BeginPlay();
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaTime) override;
+	bool ShotInput;
 protected:
 	void Move(const FInputActionValue& value);
 	void Shoot();
+	void StartRecording();
 	void TogglePauseMenu();
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -29,6 +31,8 @@ protected:
 	UInputAction* MovementAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ShootAction;
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* RecordAction;
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* EscapeMenuAction;
 };

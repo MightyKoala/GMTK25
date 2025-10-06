@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "PlayerFrameRecording.h"
+#include "FrameRecording.h"
 #include "DefaultGameInstance.generated.h"
 
 UCLASS()
@@ -13,13 +13,16 @@ class GMTK25_API UDefaultGameInstance : public UGameInstance
 public:
 	void IncreaseDeathCount() { DeathCount++; }
 	int GetDeathCount() { return DeathCount; }
-	void RecordFrame(PlayerFrameRecording frame);
+	void StoreStartingFrame();
+	void ResetToStartingFrame();
+	void RecordFrame();
 	void StoreRecordedFrames();
 	const TArray<PlayerFrameRecording>& GetRecordedPlayerFrames(int index) { return RecordedPlayerFrames[index]; }
 
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void ResetGameInstance();
 
+	FrameSnapShot RecordingStartSnapshot;
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Game Stats")
 	int DeathCount = 0;

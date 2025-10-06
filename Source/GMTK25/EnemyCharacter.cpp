@@ -19,10 +19,6 @@ void AEnemyCharacter::Tick(float DeltaTime)
         return;
 
     ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
-    if (GameMode && GameMode->IsLevelOver())
-    {
-        return;
-    }
 
     if (_TargetPlayer == nullptr)
     {

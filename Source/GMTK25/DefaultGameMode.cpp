@@ -10,10 +10,6 @@
 ADefaultGameMode::ADefaultGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	LevelTimer = LevelTime;
-	PlayerDied = false;
-	LevelCompleted = false;
-	NextLevelName = "";
 }
 
 void ADefaultGameMode::ReloadLevel()
@@ -23,12 +19,6 @@ void ADefaultGameMode::ReloadLevel()
 	{
 		GameInstance->IncreaseDeathCount();
 		GameInstance->StoreRecordedFrames();
-
-		if (GameInstance->GetDeathCount() >= AmountOfLives)
-		{
-			ToggleGameOverVisibility();
-			return;
-		}
 	}
 
 	UWorld* World = GetWorld();
@@ -39,46 +29,9 @@ void ADefaultGameMode::ReloadLevel()
 	}
 }
 
-void ADefaultGameMode::UnpauseGame()
-{
-	TogglePauseScreenVisibility();
-}
-
-int ADefaultGameMode::GetLivesLeft()
-{
-	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GameInstance)
-	{
-		return AmountOfLives - GameInstance->GetDeathCount();
-	}
-	return 0;
-}
-
-void ADefaultGameMode::CompleteLevel(FString nextLevel)
-{
-	LevelCompleted = true;
-	NextLevelName = nextLevel;
-}
-
-bool ADefaultGameMode::IsLevelOver()
-{
-	return LevelCompleted || LevelTimer <= 0.f;
-}
-
-void ADefaultGameMode::SetLevelTime(float time)
-{
-	LevelTime = time;
-	LevelTimer = LevelTime;
-}
-
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	LevelTimer = LevelTime;
-	TimeWarpTimer = TimeWarpTime;
-	PlayerDeathTimer = PlayerDeathExtraTime;
-	LevelCompleteTimer = LevelCompleteTime;
-	LevelStartTimer = LevelStartTime;
 	PlayBackTimer = 0.f;
 	GhostPlayers.Empty();
 	PlayBackIndexes.Empty();
@@ -102,98 +55,11 @@ void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (LevelStartTimer > 0.f)
-	{
-		LevelStartTimer -= DeltaTime;
-
-		ADefaultPlayerController* PlayerController = Cast<ADefaultPlayerController>(GetWorld()->GetFirstPlayerController());
-		if (PlayerController)
-		{
-			APawn* ControlledPawn = PlayerController->GetPawn();
-			if (ControlledPawn)
-			{
-				// Cast to your specific character class if needed
-				APlayerCharacter* player = Cast<APlayerCharacter>(ControlledPawn);
-				if (player)
-				{
-					if (LevelStartTimer <= 0.f)
-					{
-						player->EnableInput(PlayerController);
-					}
-					else
-					{
-						player->DisableInput(PlayerController);
-					}
-				}
-			}
-		}
-		return;
-	}
+	LevelTimer += DeltaTime;
 
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (LevelCompleted)
-	{
-		LevelCompleteTimer -= DeltaTime;
-		if (LevelCompleteTimer <= 0.f)
-		{
-			UWorld* World = GetWorld();
-			if (World)
-			{
-				if (GameInstance)
-				{
-					GameInstance->ResetGameInstance();
-				}
-				if (NextLevelName == "")
-				{
-					UGameplayStatics::OpenLevel(World, FName("BP_MainMenu"));
-				}
-				else
-				{
-					UGameplayStatics::OpenLevel(World, FName(NextLevelName));
-				}
-			}
-		}
-		return;
-	}
-
-	LevelTimer -= DeltaTime;
-	if (LevelTimer <= 0.f)
-	{
-		LevelTimer = 0.f;
-		if (PlayerDied)
-		{
-			PlayerDeathTimer -= DeltaTime;
-			if (PlayerDeathTimer > 0.f)
-			{
-				return;
-			}
-		}
-
-		TimeWarpTimer -= DeltaTime;
-
-		if (TimeWarpTimer > 0.f)
-		{
-			if (IsPlayingTimeWarp == false)
-			{
-				if(MusicActorComponent)
-					MusicActorComponent->SetPitchMultiplier(0.3f);
-
-				if (TimeRewindComponent)
-					TimeRewindComponent->Play();
-
-				IsPlayingTimeWarp = true;
-			}
-		}
-		else
-		{
-			ReloadLevel();
-		}
-		return;
-	}
-
 	if (!GhostPlayers.IsEmpty() && GameInstance)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("PlaybackTimer: %f"), PlayBackTimer);
 		PlayBackTimer += DeltaTime;
 
 		for (int ghostIndex = 0; ghostIndex < GhostPlayers.Num(); ghostIndex++)
@@ -209,7 +75,6 @@ void ADefaultGameMode::Tick(float DeltaTime)
 				{
 					if (!IsValid(GhostPlayers[ghostIndex]))
 						break;
-					//UE_LOG(LogTemp, Warning, TEXT("Replaying frame %d on ghost! from timestamp: %f"), frameIndex, frame.TimeStamp);
 					GhostPlayers[ghostIndex]->SimulateFrame(frame);
 					PlayBackIndexes[ghostIndex] = frameIndex;
 				}
@@ -220,6 +85,30 @@ void ADefaultGameMode::Tick(float DeltaTime)
 			}
 		}
 	}
+
+	if (GameInstance && RecordTimer > 0.f)
+	{
+		RecordTimer -= DeltaTime;
+		GameInstance->RecordFrame();
+		
+		if (RecordTimer <= 0.f)
+		{
+			StopRecordingFrames();
+		}
+	}
+}
+
+void ADefaultGameMode::StartRecordingFrames()
+{
+	RecordTimer = RecordTime;
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	GameInstance->StoreStartingFrame();
+}
+
+void ADefaultGameMode::StopRecordingFrames()
+{
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	GameInstance->ResetToStartingFrame();
 }
 
 void ADefaultGameMode::SpawnPlayer()

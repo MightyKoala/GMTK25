@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
-#include "PlayerFrameRecording.h"
+#include "FrameRecording.h"
 #include "PlayerGhostCharacter.generated.h"
 
 UCLASS()

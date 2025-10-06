@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
-#include "PlayerFrameRecording.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -20,8 +19,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Shoot")
 	void OnShootEvent();
 
-	PlayerFrameRecording _CurrentFrame;
-
+	bool GetShotInput();
 protected:
 	virtual void BeginPlay() override;
 
