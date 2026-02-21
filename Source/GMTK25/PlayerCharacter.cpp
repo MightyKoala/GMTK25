@@ -40,6 +40,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	if (ADefaultPlayerController* playerController = Cast<ADefaultPlayerController>(Controller))
 	{
+		playerController->ShotInput = false;
 		playerController->SetAudioListenerOverride(nullptr, GetActorLocation(), FVector(1.f, 0.f, 0.f).Rotation());
 		FVector OutLoc, OutForward, OutRight;
 		playerController->GetAudioListenerPosition(OutLoc, OutForward, OutRight);
@@ -60,5 +61,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		directionToMouse.Z = 0.0f;
 		FRotator newRotation = directionToMouse.Rotation();
 		SetActorRotation(newRotation);
+		UE_LOG(LogTemp, Warning, TEXT("Set Player Rotation: %s"), *newRotation.Vector().ToString());
+		mLastForward = newRotation.Vector();
 	}
 }

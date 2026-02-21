@@ -17,7 +17,7 @@ public:
 	void ResetToStartingFrame();
 	void RecordFrame();
 	void StoreRecordedFrames();
-	const TArray<PlayerFrameRecording>& GetRecordedPlayerFrames(int index) { return RecordedPlayerFrames[index]; }
+	const TArray<FrameSnapShot>& GetRecordedFrames(int index) { return RecordedFrames[index]; }
 
 	UFUNCTION(BlueprintCallable, Category = "GameFlow")
 	void ResetGameInstance();
@@ -26,6 +26,6 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Game Stats")
 	int DeathCount = 0;
-	TArray<TArray<PlayerFrameRecording>> RecordedPlayerFrames;
-	TArray<PlayerFrameRecording> CurrentPlayerFrames;
+	TArray<TArray<FrameSnapShot>> RecordedFrames;
+	TArray<FrameSnapShot> CurrentFrames;
 };

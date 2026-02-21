@@ -27,13 +27,14 @@ public:
 	USoundCue* AlertSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation/EnemyState")
 	bool IsAlerted = false;
+
+	ACharacterBase* TargetPlayer;
 protected:
 	virtual void BeginPlay() override;
 
 	void UpdateVision();
 	void UpdateAggresion(float DeltaTime);
 
-	ACharacterBase* _TargetPlayer;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	float _VisionRange = 10000.f;

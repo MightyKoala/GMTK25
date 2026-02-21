@@ -38,8 +38,6 @@ void ADefaultPlayerController::SetupInputComponent()
 void ADefaultPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	ShotInput = false;
 }
 
 void ADefaultPlayerController::Move(const FInputActionValue& value)

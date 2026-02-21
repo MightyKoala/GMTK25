@@ -21,6 +21,9 @@ public:
 	//Rename to OnDeath
 	void DeathEvent();
 	void MoveAct(FVector2D inputVector);
+
+	void SetHealth(int health) { _Health = health; }
+	int Gethealth() { return _Health; }
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation/EnemyState")
 	bool IsAlive = true;

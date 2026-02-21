@@ -31,6 +31,8 @@ public:
 	float RecordTime = 5.f;
 	float RecordTimer = 0.f;
 
+	TArray<int> PlayBackIndexes;
+
 	void SpawnPlayerReplayCharacter(FVector SpawnLocation, FRotator SpawnRotation);
 	void StartRecordingFrames();
 protected:
@@ -55,7 +57,4 @@ protected:
 	UUserWidget* OverlayWidget;
 
 	TArray<APlayerGhostCharacter*> GhostPlayers;
-	TArray<int> PlayBackIndexes;
-
-	float PlayBackTimer = 0.f;
 };

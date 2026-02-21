@@ -2,13 +2,11 @@
 
 #include "CoreMinimal.h"
 
-class APlayerCharacter;
+class ACharacterBase;
 
 struct PlayerFrameRecording
 {
-public:
 	FVector Location;
-	float TimeStamp;
 	FVector ForwardDirection;
 	bool ShootInput;
 };
@@ -19,12 +17,13 @@ struct GhostFrame
 	bool IsAlive;
 };
 
-struct EnemyFrame
+struct EnemyFrameRecording
 {
+	FVector Location;
 	FVector ForwardDirection;
 	float FireRateTimer;
-	APlayerCharacter* Target;
-	bool IsAlive;
+	ACharacterBase* Target;
+	int Health;
 };
 
 struct BulletState
@@ -43,4 +42,6 @@ struct FrameSnapShot
 {
 	PlayerFrameRecording PlayerFrame;
 	double TimeStamp;
+	TArray<int> PlayBackIndexes;
+	TArray<EnemyFrameRecording> EnemyFrames;
 };

@@ -32,7 +32,7 @@ void ADefaultGameMode::ReloadLevel()
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayBackTimer = 0.f;
+	LevelTimer = 0.f;
 	GhostPlayers.Empty();
 	PlayBackIndexes.Empty();
 
@@ -60,22 +60,20 @@ void ADefaultGameMode::Tick(float DeltaTime)
 	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (!GhostPlayers.IsEmpty() && GameInstance)
 	{
-		PlayBackTimer += DeltaTime;
-
 		for (int ghostIndex = 0; ghostIndex < GhostPlayers.Num(); ghostIndex++)
 		{
 			if (!IsValid(GhostPlayers[ghostIndex]) || !GhostPlayers[ghostIndex]->IsAlive)
 				continue;
-			int frameCount = GameInstance->GetRecordedPlayerFrames(ghostIndex).Num();
+			int frameCount = GameInstance->GetRecordedFrames(ghostIndex).Num();
 			int lastPlaybackIndex = PlayBackIndexes[ghostIndex];
 			for (int frameIndex = lastPlaybackIndex + 1; frameIndex < frameCount; frameIndex++)
 			{
-				const PlayerFrameRecording& frame = GameInstance->GetRecordedPlayerFrames(ghostIndex)[frameIndex];
-				if (frame.TimeStamp < PlayBackTimer)
+				const FrameSnapShot& frame = GameInstance->GetRecordedFrames(ghostIndex)[frameIndex];
+				if (frame.TimeStamp < LevelTimer)
 				{
 					if (!IsValid(GhostPlayers[ghostIndex]))
 						break;
-					GhostPlayers[ghostIndex]->SimulateFrame(frame);
+					GhostPlayers[ghostIndex]->SimulateFrame(frame.PlayerFrame);
 					PlayBackIndexes[ghostIndex] = frameIndex;
 				}
 				else

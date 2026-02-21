@@ -20,6 +20,8 @@ public:
 	void OnShootEvent();
 
 	bool GetShotInput();
+
+	FVector mLastForward;
 protected:
 	virtual void BeginPlay() override;
 

@@ -20,7 +20,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
     ADefaultGameMode* GameMode = Cast<ADefaultGameMode>(GetWorld()->GetAuthGameMode());
 
-    if (_TargetPlayer == nullptr)
+    if (TargetPlayer == nullptr)
     {
         UpdateVision();
     }
@@ -78,7 +78,7 @@ void AEnemyCharacter::UpdateVision()
                         ACharacterBase* targetPlayer = Cast<ACharacterBase>(hitResult.GetActor());
                         if (!targetPlayer->IsAlive)
                             continue;
-                        _TargetPlayer = targetPlayer;
+                        TargetPlayer = targetPlayer;
                         _AlertTimer = _TimeToAlert;
                         _LoseTargetTimer = _TimeToLoseTarget;
                         OnAlertEvent();
@@ -96,22 +96,22 @@ void AEnemyCharacter::UpdateVision()
 
 void AEnemyCharacter::UpdateAggresion(float DeltaTime)
 {
-    if (!IsValid(_TargetPlayer) || !_TargetPlayer->IsAlive)
+    if (!IsValid(TargetPlayer) || !TargetPlayer->IsAlive)
     {
-        _TargetPlayer = nullptr;
+        TargetPlayer = nullptr;
         return;
     }
     FHitResult hitResult;
     FCollisionQueryParams collisionParams;
     collisionParams.AddIgnoredActor(this);
 
-    if (_TargetPlayer && GetWorld()->LineTraceSingleByChannel(hitResult, GetActorLocation(), _TargetPlayer->GetActorLocation(), ECC_Visibility, collisionParams))
+    if (TargetPlayer && GetWorld()->LineTraceSingleByChannel(hitResult, GetActorLocation(), TargetPlayer->GetActorLocation(), ECC_Visibility, collisionParams))
     {
-        if (hitResult.GetActor() != _TargetPlayer)
+        if (hitResult.GetActor() != TargetPlayer)
         {
             _LoseTargetTimer -= DeltaTime;
             if(_LoseTargetTimer <= 0.f)
-				_TargetPlayer = nullptr;
+                TargetPlayer = nullptr;
             return;
         }
         else
@@ -121,7 +121,7 @@ void AEnemyCharacter::UpdateAggresion(float DeltaTime)
     }
 
     FVector characterPosition = GetActorLocation();
-	FVector directionToPlayer = _TargetPlayer->GetActorLocation() - characterPosition;
+	FVector directionToPlayer = TargetPlayer->GetActorLocation() - characterPosition;
 	directionToPlayer.Z = 0;
 	directionToPlayer.Normalize();
 
